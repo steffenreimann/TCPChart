@@ -1,0 +1,358 @@
+#parent { 
+    position: relative; 
+    width: 1920px; 
+    height: 1080px; 
+    font-size: 24px; 
+    text-align: center; 
+    z-index: 0;
+  } 
+#window { 
+    position: absolute; 
+    width: 1920px; 
+    height: 340px; 
+    top: 740px;
+    border: solid 3px #78e382; 
+    font-size: 24px; 
+    text-align: center;
+    z-index: 999;
+  }
+
+.map {
+    width:100%; 
+    height:340px;
+}
+
+
+
+.btn {
+    z-index: 99999999;
+}
+.tools {
+    padding-top: 200px;
+    width: 100%;
+    height: 300px;
+    z-index: 99999999;
+}
+
+body {
+  background-color: #343536;
+  margin: 0px auto; 
+  
+}
+
+#crosshair {
+  z-index: 9999;
+}
+
+
+#tacho1{
+  position: absolute; 
+    right: auto; 
+    top: auto; 
+    width: 300px; 
+    height: 300px;
+    font-size: 24px; 
+    text-align: center;
+    z-index: 1000;
+
+}
+
+#tacho2{
+    position: absolute; 
+      right: auto; 
+      top: auto; 
+      width: 300px; 
+      height: 300px;
+  
+      font-size: 24px; 
+      text-align: center;
+      z-index: 1000;
+  }
+  
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+.container {
+    width: 100%;
+}
+
+  
+
+#tachometer{
+    background-color: rgba(0, 0, 0, 0);
+    width:100%;
+    height:100%;
+    box-shadow: inset 0px 0px 9px 3px rgba(0, 0, 0, 1);
+    border: 10px solid #171717;
+    border-radius: 100%;
+    display: block;
+    position: relative;  
+    
+}
+
+
+.ii {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    
+}
+.ii div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding:4px;
+    box-sizing: border-box;
+}
+.ii div b {
+    position: absolute;
+    display: block;
+    left: 50%;
+    width: 5px;
+    height: 20px;
+    background: #FFF;
+    margin: 0 -5px 0;
+    
+}
+.ii div:nth-child(2n+1) b {
+    width: 10px;
+    height: 35px;
+    margin: 0 -5px 0;
+}
+
+.ii div:nth-child(1) {
+    transform: rotate(240deg);
+}
+.ii div:nth-child(2) {
+    transform: rotate(255deg);
+}
+.ii div:nth-child(3) {
+    transform: rotate(270deg);
+}
+.ii div:nth-child(4) {
+    transform: rotate(285deg);
+}
+.ii div:nth-child(5) {
+    transform: rotate(300deg);
+}
+.ii div:nth-child(6) {
+    transform: rotate(315deg);
+}
+.ii div:nth-child(7) {
+    transform: rotate(330deg);
+}
+.ii div:nth-child(8) {
+    transform: rotate(345deg);
+}
+.ii div:nth-child(9) {
+    transform: rotate(0deg);/*---*/
+}
+.ii div:nth-child(10) {
+    transform: rotate(15deg);
+}
+.ii div:nth-child(11) {
+    transform: rotate(30deg);
+}
+.ii div:nth-child(12) {
+    transform: rotate(45deg);
+}
+.ii div:nth-child(13) {
+    transform: rotate(60deg);
+}
+.ii div:nth-child(14) {
+    transform: rotate(75deg);
+}
+.ii div:nth-child(15) {
+    transform: rotate(90deg);
+}
+.ii div:nth-child(16) {
+    transform: rotate(105deg);
+}
+.ii div:nth-child(17) {
+    transform: rotate(120deg);
+}
+
+
+.ii div:nth-child(21) {
+    transform: rotate(120deg);
+}
+.ii div:nth-child(31) {
+    transform: rotate(120deg);
+}
+.ii div:nth-child(41) {
+    transform: rotate(120deg);
+}
+.ii div:nth-child(51) {
+    transform: rotate(300deg);
+}
+}
+.ii div:nth-child(61) {
+    transform: rotate(315deg);
+}
+}
+.ii div:nth-child(71) {
+    transform: rotate(330deg);
+}
+.ii div:nth-child(81) {
+    transform: rotate(345deg);
+}
+.ii div:nth-child(91) {
+    transform: rotate(0deg);/*---*/
+}
+.ii div:nth-child(101) {
+    transform: rotate(15deg);
+}
+.ii div:nth-child(111) {
+    transform: rotate(30deg);
+}
+.ii div:nth-child(121) {
+    transform: rotate(45deg);
+}
+.ii div:nth-child(131) {
+    transform: rotate(60deg);
+}
+.ii div:nth-child(141) {
+    transform: rotate(75deg);
+}
+.ii div:nth-child(151) {
+    transform: rotate(90deg);
+}
+.ii div:nth-child(161) {
+    transform: rotate(105deg);
+}
+.ii div:nth-child(171) {
+    transform: rotate(120deg);
+}
+
+[class^="num_"] {
+    color:#FFF;
+    display: block;
+    position: absolute;
+    width: 10px;
+    font-size:40px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: 'Open Sans', sans-serif;
+    text-decoration:none;
+      
+}
+
+[class^="1num_"] {
+    color:#FFF;
+    display: block;
+    position: absolute;
+    width: 10px;
+    font-size:40px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: 'Open Sans', sans-serif;
+    text-decoration:none;
+      
+}
+
+.num_1 {transform: rotate(120deg); top:30px;}
+.num_2 {transform: rotate(90deg); top:30px;}
+.num_3 {transform: rotate(60deg); top:30px;}
+.num_4 {transform: rotate(30deg); top:30px; left: -6px}
+.num_5 {transform: rotate(0deg);  top:30px; left: -6px}
+.num_6 {transform: rotate(330deg); top:35px; left: -6px}
+.num_7 {transform: rotate(300deg); top:35px; left: -6px}
+.num_8 {transform: rotate(270deg);top:30px;}
+.num_9 {transform: rotate(240deg);top:37px;}
+
+.num_11 {transform: rotate(120deg); top:30px;}
+.num_21 {transform: rotate(90deg); top:30px;}
+.num_31 {transform: rotate(60deg); top:30px;}
+.num_41 {transform: rotate(30deg); top:30px; left: -6px}
+.num_51 {transform: rotate(0deg); top:35px; left: -6px}
+.num_61 {transform: rotate(330deg); top:35px; left: -6px}
+.num_71 {transform: rotate(300deg); top:35px; left: -6px}
+.num_81 {transform: rotate(270deg); top:30px; }
+.num_91 {transform: rotate(240deg); top:37px;}
+
+
+
+#redline {
+    width:28px; height:150px;
+    position:absolute;
+    top:272px;
+    right:12px;
+    border-width: 22px;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0) #F14134 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+    transform:rotate(15deg);
+    z-index:1
+    }
+
+.line {
+
+    
+    background: #F14134;
+    background-image: linear-gradient(to bottom, #F14134, #343536);
+    height: 0;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    width: 0;
+    transform-origin: 40% 100%;
+    margin: -285px -8px 0;
+    padding: 285px 8px 0;
+    z-index:2;
+    border-radius: 50% 50% 0 0;    
+    transform:rotate(-120deg);
+    
+    animation: pendulum;
+    animation-iteration-count: 1;
+    animation-duration: 4s;
+}
+
+.pin {
+    width: 50px;
+    height: 50px;
+    left:50%;
+    top:50%;
+    margin: -25px 0 0 -25px;
+    background-color: #343536;
+    border-radius: 50%;
+    position: absolute;
+    box-shadow: 0 8px 15px 0 rgba(0, 0, 0, 0.5);
+    background-image: linear-gradient(to bottom, #F14134, #343536);
+    z-index: 4;
+}
+
+
+.inner {
+    width: 30px;
+    height: 30px;
+    margin: 10px auto 0;
+    background-color: #343536;
+    border-radius: 100%;
+    box-shadow: inset 0 8px 15px 0 rgba(167, 23, 10, 0.4);
+    position: relative;
+}
+
+#tachometerval {
+    margin-top: 80%;
+    color: #78e382;
+    z-index: 999;
+}
+
+
+
+
+@keyframes pendulum {
+    10% {
+        transform:rotate(120deg);
+    }
+   
+}
+
+@font-face {
+    font-family:'testfont_btz';
+    font-style: normal;
+    font-weight: 400;
+    src: url(fonts/testfont_btz.ttf) format('ttf'); 
+}
+
+

@@ -1,0 +1,21 @@
+{
+  "name": "OBS_HTML_Overlay",
+  "description": "",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://gitlab.javerik.com/BollerTuneZ/obs_html_overlay/"
+  },
+  "keywords": [],
+  "author": "Steffen Reimann",
+  "license": "ISC",
+  "homepage": "https://tech.bollertunez.de",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
+  }
+}

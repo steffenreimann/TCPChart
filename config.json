@@ -1,0 +1,43 @@
+{
+  "sync": {
+    "#window": {
+      "element": "#window",
+      "css": "border",
+      "cssd": "solid 3px #78e382",
+      "left": -2,
+      "top": 737,
+      "width": 2032,
+      "height": 411,
+      "visi": "hidden"
+    },
+    "#tacho1": {
+      "element": "#tacho1",
+      "left": 589,
+      "top": 94,
+      "visi": "hidden",
+      "width": 563,
+      "height": 449
+    },
+    "undefined": {
+      "reload": true
+    },
+    "#tacho2": {
+      "element": "#tacho2",
+      "visi": "hidden",
+      "left": 1152,
+      "top": 14,
+      "width": 657,
+      "height": 676
+    }
+  },
+  "map": {
+    "lat": "53.623684",
+    "lan": "10.434394",
+    "zoom": "14",
+    "hidden": "visible"
+  },
+  "btz": {
+    "element": "line",
+    "val": "5.98"
+  }
+}
