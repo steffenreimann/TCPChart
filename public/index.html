@@ -1,95 +1,81 @@
 <html>
 <head>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ <!--   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
      <link rel="stylesheet" type="text/css" href="main.css" media="screen" />
-
-     
-      <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
-      <script>
-        
-      </script>
+      <script src="js/openlayers.js"></script>
       
 </head>
 <body onload="initmap();">
     <div id="parent" >
       <div id="window">
-            
           <div id="basicMap" class="map"></div>
       </div>
 
-
     <div id="tacho1" class="box">
         <canvas id="tacho1gau" data-type="radial-gauge"
-    data-width="300"
-    data-height="300"
-    data-units="Km/h"
-    data-min-value="0"
-    data-start-angle="90"
-    data-ticks-angle="180"
-    data-value-box="false"
-    data-max-value="10"
-    data-major-ticks="0,1,2,3,4,5,6,7,8,9,10"
-    data-minor-ticks="2"
-    data-stroke-ticks="true"
-    data-highlights='[
-        {"from": 7, "to": 10, "color": "rgba(200, 50, 50, .75)"}
-    ]'
-    data-color-plate="#fff"
-    data-border-shadow-width="0"
-    data-borders="false"
-    data-needle-type="arrow"
-    data-needle-width="2"
-    data-needle-circle-size="7"
-    data-needle-circle-outer="true"
-    data-needle-circle-inner="false"
-    data-animation-duration="1500"
-    data-animation-rule="linear"
-></canvas>
-
+            data-width="300"
+            data-height="300"
+            data-units="Km/h"
+            data-min-value="0"
+            data-start-angle="60"
+            data-ticks-angle="240"
+            data-value-box="true"
+            data-max-value="10"
+            data-major-ticks="0,1,2,3,4,5,6,7,8,9,10"
+            data-minor-ticks="10"
+            data-stroke-ticks="true"
+            data-highlights='[
+                {"from": 7, "to": 10, "color": "rgba(200, 50, 50, .75)"}
+            ]'
+            data-color-plate="rgba(0, 0, 0, 0)"
+            data-border-shadow-width="5"
+            data-borders="false"
+            data-needle-type="arrow"
+            data-needle-width="2"
+            data-needle-circle-size="7"
+            data-needle-circle-outer="true"
+            data-needle-circle-inner="false"
+            data-animation-duration="0"
+            data-animation-duration="0"
+            data-animation-rule="linear">
+        </canvas>
     </div>
     <div id="tacho2" class="box">
         <canvas id="tacho2gau" data-type="radial-gauge"
-    data-width="300"
-    data-height="300"
-    data-units="u/min"
-    data-min-value="0"
-    data-start-angle="60"
-    data-ticks-angle="240"
-    data-value-box="true"
-    data-max-value="4"
-    data-major-ticks="0,0.5,1,1.5,2,2.5,3,3.5,4,4.5"
-    data-minor-ticks="10"
-    data-stroke-ticks="true"
-    data-highlights='[
-        {"from": 3, "to": 4, "color": "rgba(200, 50, 50, .75)"}
-    ]'
-    data-color-plate="rgba(0, 0, 0, 0)"
-    data-border-shadow-width="0"
-    data-borders="false"
-    data-needle-type="arrow"
-    data-needle-width="4"
-    data-needle-circle-size="10"
-    data-needle-circle-outer="true"
-    data-needle-circle-inner="false"
-    data-animation-duration="1500"
-    data-animation-rule="linear"
-></canvas>
+            data-width="300"
+            data-height="300"
+            data-units="u/min"
+            data-min-value="0"
+            data-start-angle="60"
+            data-ticks-angle="240"
+            data-value-box="true"
+            data-max-value="4.5"
+            data-major-ticks="0,0.5,1,1.5,2,2.5,3,3.5,4,4.5"
+            data-minor-ticks="5"
+            data-stroke-ticks="true"
+            data-highlights='[
+                {"from": 3, "to": 4.5, "color": "rgba(200, 50, 50, .75)"}
+            ]'
+            data-color-plate="rgba(0, 0, 0, 0)"
+            data-border-shadow-width="0"
+            data-borders="false"
+            data-needle-type="arrow"
+            data-needle-width="4"
+            data-needle-circle-size="10"
+            data-needle-circle-outer="true"
+            data-needle-circle-inner="false"
+            data-animation-duration="1500"
+            data-animation-rule="linear">
+        </canvas>
     </div>
-
-
-    
-      <canvas id="myCanvas" width="1920" height="1080" style="border:1px solid #573030;">
+        <canvas id="myCanvas" width="1920" height="1080" style="border:1px solid #573030;">
         Your browser does not support the canvas element.
-        <div id="crosshair">o</div>
-        
+            <div id="crosshair">o</div>
         </canvas>
     </div>
 
-
     <div class="tools">
-
-
-    <form>
+        <form>
         <label class="container"> Map Move
             <input value="move-window" type="checkbox">
             <span class="checkmark"></span>
@@ -134,7 +120,7 @@
                     <input value="visi-tacho2" type="checkbox">
                     <span class="checkmark"></span>
                 </label>
-            </form>
+        </form>
         <button class="btn" onclick="reload()">reload</button>
         <button onclick="anwend()">Anwenden</button>
         <button onclick="scale('#window', true, false)">scale</button>
@@ -142,20 +128,12 @@
         <input type="range" min="0.00" max="10.00" step="0.01" id="testbtzrange">
     </div> 
 
-   
 </body>
-    
 <script src="js/jquery-3.3.1.min.js"></script>  
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>   
+<!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>   -->
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/socket.io/dist/socket.io.js"></script>
 <script src="js/gauge.min.js"></script>
-
-
-
-
-
-
-    <script src="js/draw.js"></script>
+<script src="js/draw.js"></script>
 
 </html>

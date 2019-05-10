@@ -21,23 +21,19 @@ function reload(){
       socket.on('sync', function (data) {
           console.log("Daten vom Server = ");
           console.log(data);
+
         if (data.element == "tacho1" || "tacho2") {
-          const el = document.querySelector(data.element + "gau");
-          el.dataset.width = data.width
-        el.dataset.height = data.height
+          if(data.width && data.height != "0"){
+            const el = document.querySelector(data.element + "gau");
+            el.dataset.width = data.width
+          el.dataset.height = data.height
+          }
         }
+
           $(data.element).css({top: data.top, left: data.left, position:'absolute'});
           $(data.element).css({width: data.width, height: data.height});
           $(data.element).css({border: data.cssd});
 
-          if(data.click == 1){
-            //console.log(data.click);
-            //document.elementFromPoint(data.left, data.top).click();
-            var event = $.Event('click');
-            event.clientX = data.left;
-            event.clientY = data.top;
-            $(document).trigger(event);
-          }
 
           if(data.reload == true){
             location.reload();
@@ -144,7 +140,8 @@ function reload(){
 
     socket.on('btz', function (data) {
               console.log(data);
-              animiTacho(data.element, data.val)
+              var hh = data.element 
+              animiTacho(hh, data.val)
     });
 
 
@@ -204,8 +201,8 @@ function reload(){
               //el.val(parseInt(el.val(), 10) + 1);
               var val = el.val();
               console.log(val);
-              socket.emit('btz', {element: 'line', val: val});
-            }, 50);
+              socket.emit('btz', {element: 'tacho1', val: val});
+            }, 500);
           },
           mouseup : function () {
             window.clearInterval(interval);
@@ -245,33 +242,21 @@ function reload(){
 
       function setDeg(element, val){
         var string = "rotate(" + val + "deg)";
-        
-        
         document.getElementById(element).style.transform = string;
-        
       }
 
       var geschw = 0 
       function animiTacho(element, val){
         console.log(element);
         console.log(val);
-        var string2 = val + " kmh";
 
-        document.getElementById('tachometerval').innerHTML = string2;
 
-        var under4 = mapping(val, 0, 8, -120, 120)
-        console.log(under4);
 
-        
+        const el = document.querySelector("#" + element + "gau");
+          el.dataset.value = val
 
-        setDeg(element, under4)
-      
-
-        
-
-        //let para = document.querySelector(element);
-        //let compStyles = window.getComputedStyle(para);
-        //console.log("transform deg  =  " + compStyles.getPropertyValue('transform'));
+        //setDeg(element, under4)
+    
         geschw = val 
       }
 
