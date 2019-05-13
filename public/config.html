@@ -1,0 +1,76 @@
+<html>
+<head>
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> 
+     <link rel="stylesheet" type="text/css" href="main.css" media="screen" />
+      <script src="js/openlayers.js"></script>
+      
+</head>
+<body onload="init()">
+    
+
+    <div class="tools">
+        <form>
+        <label class="container"> Map Move
+            <input value="move-window" type="checkbox">
+            <span class="checkmark"></span>
+        </label>
+          
+        <label class="container">Map Scale
+            <input  value="scale-window" type="checkbox">
+            <span class="checkmark"></span>
+        </label>
+          
+        <label class="container">Map Visibility
+            <input  value="visi-window" type="checkbox">
+            <span class="checkmark"></span>
+        </label>
+        <br>
+        <label class="container">Tacho 1 Move
+                <input value="move-tacho1" type="checkbox">
+                <span class="checkmark"></span>
+            </label>
+              
+            <label class="container">Tacho 1 Scale
+                <input value="scale-tacho1" type="checkbox">
+                <span class="checkmark"></span>
+            </label>
+              
+            <label class="container">Tacho 1 Visibility
+                <input value="visi-tacho1" type="checkbox">
+                <span class="checkmark"></span>
+            </label>
+<br>
+            <label class="container">Tacho 2 Move
+                    <input value="move-tacho2" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+                  
+                <label class="container">Tacho 2 Scale
+                    <input value="scale-tacho2" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+                  
+                <label class="container">Tacho 2 Visibility
+                    <input value="visi-tacho2" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container">CMDLine
+                    <input id="CMDLine" type="text">
+                    <span class="checkmark"></span>
+                </label>
+        </form>
+        <button class="btn" onclick="reload()">reload</button>
+        <button onclick="anwend()">Anwenden</button>
+        <button onclick="scale('#window', true, false)">scale</button>
+        <button onclick="line()">line</button>
+        <input type="range" min="0.00" max="10.00" step="0.01" id="testbtzrange">
+    </div> 
+
+</body>
+<script src="js/jquery-3.3.1.min.js"></script>  
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>   
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/socket.io/dist/socket.io.js"></script>
+<script src="js/config.js"></script>
+
+</html>

@@ -143,7 +143,9 @@ function reload(){
               var hh = data.element 
               animiTacho(hh, data.val)
     });
-
+    socket.on('sendbtzcmd', function (data) {
+      console.log(data);
+    });
 
       
       
