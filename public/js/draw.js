@@ -90,12 +90,11 @@ function reload(){
   }
 
 
-  function move(element, perm, disabled){
+  function move(element, perm){
     
-    console.log(element);
-    console.log(perm);
-    console.log(disabled);
-
+    console.log("Move element = " + element);
+    console.log("Move perm  = " + !perm);
+ 
     $( element ).draggable({ snap: true, disabled: !perm });
 
     if(perm){
@@ -108,8 +107,9 @@ function reload(){
   //scale({element: "#window", disabled: true});
   function scale(element, perm){
     const el = document.querySelector(element + "gau");
-    console.log(element);
-    console.log(perm);
+    console.log( "scale element = " + element);
+    console.log("scale perm = " + !perm);
+
     $(element).resizable({disabled: !perm });
     $(element).on("resize", function( event, ui ) {
         sync({element: element, width: ui.size.width, height: ui.size.height})
@@ -156,29 +156,22 @@ function reload(){
         for (i = 0; i < radios.length; i++) {
           var ll = radios[i].value
           var uu = ll.split("-");
+          console.log("uu")
           console.log(uu)
           if (uu[0] == 'move') {
-
+            console.log(uu[1])
             move('#' + uu[1], radios[i].checked)
-
           }else if(uu[0] == 'scale'){
-
             scale('#' + uu[1], radios[i].checked)
-
           }else if(uu[0] == 'visi'){
-            //vis('#window', true, false)
             if (radios[i].checked) {
               visi('#' + uu[1], 'visible')
             }else{
               visi('#' + uu[1], 'hidden')
-
             }
-            
           }
 
           if (radios[i].checked) {
-            
-
             console.log('radio true ' + radios[i].value );
           }else{
 
@@ -189,7 +182,7 @@ function reload(){
       }
 
       function testbtz(){
-        console.log("testbtz start ");
+        console.log("testbtz start");
         //console.log(data);
 
         var interval;
@@ -207,6 +200,7 @@ function reload(){
             }, 500);
           },
           mouseup : function () {
+            console.log("testbtz mouseup ");
             window.clearInterval(interval);
           }
         });
