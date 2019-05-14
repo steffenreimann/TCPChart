@@ -12,10 +12,12 @@ var cache = {
 };
 
 btz_connector.Connect(function (connected) {
-    console.log("TCP client is:");
-    console.log(connected);
+    console.log("TCP client is");
+    console.log("Connected " + connected);
     if(connected){
-        update_configs();
+      btz_connector.SendRequest({"category":"config","command":"CFG_STEERING_CALIB"});
+       /// update_configs();
+       // update_position();
     }
 });
 
@@ -87,7 +89,21 @@ function on_btz_data(data) {
 
 
   function update_configs(){
-      btz_connector.SendRequest({"device": "all", "category":"config","command":"CFG_STEERING_STATUS", "data":{"mode": "r"}});
+
+      
+      console.log("updata");
+
+      btz_connector.SendRequest({
+            "category": "control",
+            "command": "get_st_target_pos",
+            "data": {
+              "pos": 1234
+            }
+          });
+
+
+
+     // btz_connector.SendRequest({"device": "all", "category":"config","command":"CFG_STEERING_STATUS", "data":{"mode": "r"}});
       setTimeout(function () {
           //btz_connector.SendRequest({"device": "all", "category":"config","command":"CFG_DRIVE", "data":{"mode": "r"}});
       },200);

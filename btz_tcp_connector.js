@@ -3,7 +3,7 @@
  */
 var net = require('net');
 
-var server_address = "192.168.178.197";
+var server_address = "192.168.178.38";
 var server_port = 55566;
 var client = net.Socket();
 var client_connected = false;
@@ -25,6 +25,7 @@ function set_data_callback(callback){
 }
 
 function send_request(request) {
+    console.log(request);
     client.write(JSON.stringify(request));
 }
 
