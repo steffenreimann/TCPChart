@@ -15,7 +15,8 @@ btz_connector.Connect(function (connected) {
     console.log("TCP client is");
     console.log("Connected " + connected);
     if(connected){
-      btz_connector.SendRequest({"category":"config","command":"CFG_STEERING_CALIB"});
+        btz_connector.Send({"category":"config","command":"CFG_READ","data":{"mode":"rf"},"device":"mobil"});
+        btz_connector.Send({"category":"config","command":"CFG_STEERING_STATUS","data":{"mode":"rf"},"device":"mobil"});
        /// update_configs();
        // update_position();
     }
@@ -57,7 +58,7 @@ io.on('connection', function (socket) {
     socket.on('sendbtzcmd', function (data) {
       console.log('sendbtzcmd data = ');
       console.log(data);
-      btz_connector.SendRequest(data);
+      btz_connector.Send(data);
       socket.emit('sendbtzcmd', data);
       
 });
