@@ -1,0 +1,123 @@
+/**
+ * Created by Steffen Reimann on 16.05.19
+ */
+
+var cmdarr = [{cmd: '!lol', obj:{"category":"config","command":"CFG_READ","data":{"mode":"rf"},"device":"mobil"}}]
+
+
+
+function initCLI(id) {
+    var CMDLineHistory = [];
+    var CMDLineHistoryCounter = 0;
+
+    var element = document.getElementById(id)
+    element.addEventListener ('keydown', function (e) {
+        console.log(event.which)
+        if (event.which == 13) {
+            //var str = document.getElementById(id)
+            var str = $("#" + id).val();
+            console.log(str)
+            var out = filter(str, cmdarr)
+            console.log(out)
+            run(out);
+            $("#" + id).val("")
+            
+            if(str != "" && CMDLineHistory[CMDLineHistoryCounter] != str){
+                CMDLineHistory.push(str)
+                CMDLineHistoryCounter = CMDLineHistoryCounter + 1
+            }
+            
+        }
+        if (e.keyCode == 9) {
+            e.preventDefault(); 
+            var str = $("#" + id).val();
+            var out = filterTab(str, CMDLineHistory)
+            console.log(out);
+            $("#" + id).val(out.cmd);
+        }
+        if(e.keyCode == 40){
+            if(CMDLineHistoryCounter + 1 <= CMDLineHistory.length){
+                CMDLineHistoryCounter = CMDLineHistoryCounter + 1   
+            }  
+            $("#" + id).val(CMDLineHistory[CMDLineHistoryCounter])
+        }
+        if(e.keyCode == 38) {
+            if(CMDLineHistoryCounter - 1 >= 0){
+                CMDLineHistoryCounter = CMDLineHistoryCounter - 1   
+            }
+            $("#" + id).val(CMDLineHistory[CMDLineHistoryCounter])  
+        }
+    });
+}
+
+//zufiltender string ob es ein cmd enthält  
+//array von objs wo der cmd und data zum abgleichen drin sind
+//return ist ein array aus allen cmds die gefunden wurden
+function filter(str, arr) {
+    var strarr = str.split(' ');
+    var out = {isCMD: false, cmd: []}
+    strarr.forEach(element1 => {
+        arr.forEach(element2 => {
+            if(element1 == element2.cmd){
+                out.isCMD = true;
+                out.cmd.push(element2);
+            }
+        });
+    });
+    if(!out.isCMD){
+        out.cmd = str;
+    }
+    return out
+}
+
+var last = '';
+var firstArr = '';
+var first = true
+function filterTab(str, arr) {
+    var strarr = str.split('');
+    var out = {isCMD: false, cmd: []}
+    var trueInt = 0;
+    var point = 0;
+    if (first) {
+        firstArr = strarr
+    }else{
+        strarr = firstArr
+    }
+
+    for (let index1 = 0; index1 < arr.length; index1++) {
+            var d = arr[index1].split('');
+            point = index1;
+            for (let index = 0; index < strarr.length; index++) {
+           
+                if (strarr[index] == d[index]) {
+                    trueInt++
+                }
+            }
+            if(strarr.length == trueInt && last != arr[point]){
+                out.cmd = arr[point];
+                last = arr[point];
+                trueInt = 0;
+                first = false;
+            }else if(last == arr[point]){
+                trueInt = 0;
+            }
+        };
+    
+
+    
+    return out
+}
+
+//console.log(filterCMD("!lol", cmdarr));
+//cmds = Obj or Array of Objs
+function run(data) {
+    if(data.isCMD){
+        data.cmd.forEach(element => {
+            console.log(element)
+            //socket.emit('sendbtzcmd', element.obj);
+        });
+    }else{
+        //socket.emit('sendbtzcmd', data.cmd);
+    }
+}
+

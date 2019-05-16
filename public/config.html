@@ -2,6 +2,9 @@
 <head>
    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> 
      <link rel="stylesheet" type="text/css" href="main.css" media="screen" />
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+     <!--Google Icon Font-->
+     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <script src="js/openlayers.js"></script>
       
 </head>
@@ -9,7 +12,7 @@
     
 
     <div class="tools">
-        <form>
+        
         <label class="container"> Map Move
             <input value="move-window" type="checkbox">
             <span class="checkmark"></span>
@@ -54,23 +57,48 @@
                     <input value="visi-tacho2" type="checkbox">
                     <span class="checkmark"></span>
                 </label>
-                <label class="container">CMDLine
-                    <input id="CMDLine" type="text">
-                    <span class="checkmark"></span>
-                </label>
-        </form>
+               
+        
         <button class="btn" onclick="reload()">reload</button>
         <button onclick="anwend()">Anwenden</button>
         <button onclick="scale('#window', true, false)">scale</button>
         <button onclick="line()">line</button>
         <input type="range" min="0.00" max="10.00" step="0.01" id="testbtzrange">
     </div> 
+            <!-- Footer -->
+            <footer class="footer">
 
+                <!-- Footer Links -->
+                <div class="container-fluid text-center text-md-left">
+                       <div class="row" style="margin-top: 16px;">
+                                    <div class="col-xs-11">
+                                    
+                                        <div  class="form-group pmd-textfield">
+                                            
+                                            <input type="text" id="CMDLine" autocomplete="off"  placeholder="Nachricht Schreiben" class="form-control mit">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-1 text-right">
+                                     <i type="button" class="c disable material-icons md-dark pmd-md" data-target="#complete-dialog" data-toggle="modal" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Verlinkung">add</i>
+                                    
+                                </div>
+                                </div>
+            
+                            
+                        
+                    
+                    </div>
+                <!-- Copyright -->
+            
+              </footer>
+              <!-- Footer -->
 </body>
 <script src="js/jquery-3.3.1.min.js"></script>  
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>   
 <!-- Include all compiled plugins (below), or include individual files as needed -->
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="js/socket.io/dist/socket.io.js"></script>
+<script src="js/cmdline.js"></script>
 <script src="js/config.js"></script>
 
 </html>

@@ -1,0 +1,3 @@
+[submodule "yaml/api"]
+	path = yaml/api
+	url = http://gitlab.javerik.com/BollerTuneZ/json-api.git

@@ -22,7 +22,15 @@
     height:340px;
 }
 
-
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #5d8989;
+    color: white;
+    box-shadow: -3px -3px 15px #183E47;
+ }
 
 .btn {
     z-index: 99999999;

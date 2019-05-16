@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BtzreadComponent } from './btzread/btzread.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,

@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Line Chart - Combo Time Scale</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="chartjs/Chart.bundle.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+     <!--Google Icon Font-->
+     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="main.css" media="screen" />
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+	</style>
+</head>
+
+<body>
+	<canvas id="myChart"></canvas>
+    <footer class="footer">
+
+        <!-- Footer Links -->
+        <div class="container-fluid text-center text-md-left">
+               <div class="row" style="margin-top: 16px;">
+                            <div class="col-xs-11">
+                            
+                                <div  class="form-group pmd-textfield">
+                                    
+                                    <input type="text" id="CMDLine" autocomplete="off"  placeholder="Nachricht Schreiben" class="form-control mit">
+                                </div>
+                            </div>
+                            <div class="col-xs-1 text-right">
+                             <i type="button" class="block-tab c disable material-icons md-dark pmd-md" data-target="#complete-dialog" data-toggle="modal" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Verlinkung">add</i>
+                            
+                        </div>
+                        </div>
+    
+                    
+                
+            
+            </div>
+        <!-- Copyright -->
+    
+      </footer>
+      <!-- Footer -->
+</body>
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>   
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="js/socket.io/dist/socket.io.js"></script>
+<script src="js/cmdline.js"></script>
+<script src="js/debug.js"></script>
+
+</html>

@@ -3,7 +3,57 @@ var app            	= express();
 var httpServer		= require("http").createServer(app);
 var io              = require('socket.io')(httpServer);
 var btz_connector = require('./btz_tcp_connector');
+var fs = require('fs');
+const YAML = require('yaml')
 var position_status_timer = null;
+
+
+const file = fs.readFileSync('./yaml/api/api.yml', 'utf8')
+
+var btzapi = YAML.parse(file)
+
+
+
+
+function get_template(category, command, mode) {
+
+    if(category == "config") {
+        var cate = btzapi.config;
+    } else if(category == "control") {
+        var cate = btzapi.control;
+    }
+
+    var keys = Object.keys(cate);
+    if(keys.indexOf(command) == -1) {
+        console.error("command not found", command);
+        return null;
+    }
+
+    var cmd = cate[command];
+    if (cmd.mode.indexOf(mode) == -1) {
+        console.error("mode not supported", mode);
+        return null;
+    }
+    var data = cmd.response;
+    data["mode"] = mode;
+    
+    return {category: category, command: command, device: "mobil", data: data}
+
+}
+
+function get_cfg_object(calibspeed, pid, thresholds) {
+    var cmd = get_template("config", "CFG_READ", "rf");
+    cmd.data.calibspeed = calibspeed;
+    cmd.data.pid = pid;
+    cmd.data.thresholds = thresholds;
+    return cmd;
+}
+
+var test_cmd = get_template("config", "CFG_READ", "rf")
+var another_cmd = get_cfg_object(100, {p: 10.0, i: 12.3, d: 123.23},{t_d_max: 1, t_d_min: 1, t_s_max: 100, t_s_min: 50, t_s_pos: 1000});
+
+
+console.log(test_cmd)
 
 var cache = {
     cfg_steering: null,
@@ -15,14 +65,11 @@ btz_connector.Connect(function (connected) {
     console.log("TCP client is");
     console.log("Connected " + connected);
     if(connected){
-        btz_connector.Send({"category":"config","command":"CFG_READ","data":{"mode":"rf"},"device":"mobil"});
-        btz_connector.Send({"category":"config","command":"CFG_STEERING_STATUS","data":{"mode":"rf"},"device":"mobil"});
-       /// update_configs();
+       btz_connector.DataCallback(on_btz_data);
+        update_configs();
        // update_position();
     }
 });
-
-
 
 httpServer.listen("8080");
 app.use(express.static(__dirname + '/public'));
@@ -59,7 +106,7 @@ io.on('connection', function (socket) {
       console.log('sendbtzcmd data = ');
       console.log(data);
       btz_connector.Send(data);
-      socket.emit('sendbtzcmd', data);
+      //socket.emit('sendbtzcmd', data);
       
 });
 
@@ -84,34 +131,24 @@ function on_request(data){
   
 function on_btz_data(data) {
       console.log(data);
-      //io.sockets.emit('data', data);
+      io.sockets.emit('sendbtzcmd', data);
 }
   
 
 
   function update_configs(){
+    console.log("updata");
+   // btz_connector.Send({"device": "mobil", "category":"config","command":"CFG_STEERING_STATUS", "data":{"mode": "rf"}});
+    //btz_connector.Send({"device": "mobil", "category":"config","command":"CFG_DRIVE", "data":{"mode": "rf"}});
 
-      
-      console.log("updata");
+    btz_connector.Send({"category":"config","command":"CFG_READ","data":{"mode":"rf"},"device":"mobil"});
+    btz_connector.Send({"category":"control","command":"ST_POSITION","data":{"mode":"rf"},"device":"mobil"});
 
-      btz_connector.SendRequest({
-            "category": "control",
-            "command": "get_st_target_pos",
-            "data": {
-              "pos": 1234
-            }
-          });
-
-
-
-     // btz_connector.SendRequest({"device": "all", "category":"config","command":"CFG_STEERING_STATUS", "data":{"mode": "r"}});
-      setTimeout(function () {
-          //btz_connector.SendRequest({"device": "all", "category":"config","command":"CFG_DRIVE", "data":{"mode": "r"}});
-      },200);
+    //btz_connector.Send({"category":"config","command":"CFG_STEERING_STATUS","data":{"mode":"rf"},"device":"mobil"});
   }
   
   function update_position() {
-      btz_connector.SendRequest({"category":"control","command":"ST_POSITION", "data":{"mode": "r", 'pos_mode': "real"}});
+      btz_connector.Send({"category":"control","command":"ST_POSITION", "data":{"mode": "rf", 'pos_mode': "real"}});
   }
   
   btz_connector.DataCallback(on_btz_data);

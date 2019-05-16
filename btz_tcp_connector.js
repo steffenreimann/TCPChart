@@ -8,6 +8,7 @@ var server_port = 55566;
 var client = net.Socket();
 var client_connected = false;
 var data_callback = null;
+
 var MSG_buffer = [];
 var busy = false;
 var counter = 0;
@@ -26,9 +27,7 @@ function connect_to_server(connected_callback){
     });
 }
 
-function set_data_callback(callback){
-    data_callback = callback;
-}
+
 
 function send(data) {
     MSG_buffer.push(data);
@@ -62,6 +61,11 @@ function send_request() {
     }, 500); 
 }
 
+
+function set_data_callback(callback){
+    data_callback = callback;
+}
+
 function on_data(data){
     console.log("ondata");
     if(data_callback == null){
@@ -77,6 +81,16 @@ function on_error(error){
     console.log("Client error");
     console.log(error);
 }
+
+
+function isDebug(data) {
+    if (data.category == "debug") {
+        return true
+    }
+    return false 
+}
+
+
 module.exports = {
     Connect: connect_to_server,
     Send: send,
