@@ -1,20 +1,68 @@
 socket = io.connect();
-
+socket.emit('readAPI');
+socket.emit('test');
+var debug_data = [];
 initCLI('CMDLine');
 
 socket.on('sendbtzcmd', function (data) {
     console.log("Daten vom Server = ");
     console.log(data);
-
     if(data.category == 'debug'){
         console.log();
     }
 });
 
+socket.on('readAPI', function (data) {
+    console.log("Daten vom Server readAPI = ");
+    console.log(data);
+    console.log(get_debug(data));
+    console.log("DIR FOR = " + dir("FOR"));
+    console.log("DIR FOR = " + dir("REV"));
+});
+
+socket.on('onData', function (data) {
+    console.log("Daten vom Server onData = ");
+    console.log(data);
+    if(data.category == 'debug'){
+        data.response.forEach(element => {
+            console.log(element.time);
+            //debug_data.push(element);
+            //cfg.data.datasets.data = debug_data;
+            var timee = time(element.time);
+            addData(chart, "Lenkung Ist", {y: element.current_position, x: timee})
+            addData(chart, "Lenkung Soll", {y: element.target_position, x: timee})
+            addData(chart, "ADC Power", {y: dac(element.dac_power, 'volt'), x: timee})
+            addData(chart, "Drehrichtung", {y: dir(element.direction), x: timee})
+            chart.data.labels.push(timee);
+            console.log("debug ----------");
+        });
+        
+    }
+});
+
+function addData(chart, label, data) {
+    chart.data.datasets.forEach((dataset) => {
+        if (dataset.label == label) {
+            console.log(dataset);
+            dataset.data.push(data);
+        }
+        if(chart.data.datasets.length == 4){
+            //chart.data.labels.shift();
+           // dataset.data.shift();
+        }
+        chart.update();
+    });
+}
+function removeData(chart) {
+    chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.pop();
+    });
+    chart.update();
+}
 function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
 }
-
 function randomBar(date, lastClose) {
     var open = randomNumber(lastClose * 0.95, lastClose * 1.05).toFixed(2);
     var close = randomNumber(open * 0.95, open * 1.05).toFixed(2);
@@ -23,7 +71,6 @@ function randomBar(date, lastClose) {
         y: close
     };
 }
-
 var dateFormat = 'MM DD YYYY';
 var date = moment('01 01 2019', dateFormat);
 var data = [randomBar(date, 30)];
@@ -34,77 +81,82 @@ while (data.length < 60) {
         console.log("puish");
     }
 }
-
 var ctx = document.getElementById('myChart').getContext('2d');
 ctx.canvas.width = 1000;
 ctx.canvas.height = 300;
-
 var color = Chart.helpers.color;
-
-
 var cfg = {
     type: 'line',
     data: {
-        datasets: [{
-            label: '# of Votes',
-            pointRadius: 0,
-			fill: false,
-			lineTension: 0,
-            borderWidth: 2,
-            data: data,
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
+      datasets: [{
+        label: 'ADC Power',
+        yAxisID: 'A',
+        borderColor: "#8e5ea2",
+        fill: false,
+        data: []
+      }, {
+        label: 'Lenkung Soll',
+        yAxisID: 'B',
+        borderColor: "#3cba9f",
+        fill: false,
+        data: []
+      },{
+        label: 'Lenkung Ist',
+        yAxisID: 'C',
+        borderColor: "#e8c3b9",
+        fill: false,
+        data: []
+      },{
+        label: 'Drehrichtung',
+        yAxisID: 'D',
+        steppedLine: 'before',
+        borderColor: "#c45850",
+        fill: false,
+        data: []
+      },]
     },
     options: {
+        responsive: true,
+        legend: {
+            position: 'bottom'
+        },
         scales: {
             xAxes: [{
-                type: 'time',
-                distribution: 'series',
+                
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: ''
+                },
                 ticks: {
-                    source: data,
-                    autoSkip: false
-                }
-            }]
-        },
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: false
-                }
-            }]
-        },
-        tooltips: {
-            intersect: false,
-            mode: 'index',
-            callbacks: {
-                label: function(tooltipItem, myData) {
-                    var label = myData.datasets[tooltipItem.datasetIndex].label || '';
-                    if (label) {
-                        label += ': ';
+                    major: {
+                        fontStyle: 'bold',
+                        fontColor: '#FF0000'
                     }
-                    label += parseFloat(tooltipItem.value).toFixed(2);
-                    return label;
                 }
-            }
+            }],
+            yAxes: [{
+            id: 'A',
+            type: 'linear',
+            position: 'left',
+            }, {
+            id: 'B',
+            type: 'linear',
+            position: 'left'
+            }, {
+                id: 'C',
+                type: 'linear',
+                position: 'right'
+            }, {
+                id: 'D',
+                type: 'linear',
+                position: 'right',
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 1
+                }
+            }]
         }
     }
-}
-
-
+};
 var chart = new Chart(ctx, cfg);
