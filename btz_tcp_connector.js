@@ -2,7 +2,7 @@
  * Created by jonas on 13.05.17.
  */
 var net = require('net');
-var btz_server_ip = "192.168.178.38";
+var btz_server_ip = "192.168.178.197";
 var btz_server_port = 55566;
 var client = net.Socket();
 var client_connected = false;

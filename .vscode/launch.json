@@ -7,8 +7,16 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch Windows",
             "program": "${workspaceFolder}\\app.js",
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ]
+        },{
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Mac",
+            "program": "${workspaceFolder}/app.js",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]

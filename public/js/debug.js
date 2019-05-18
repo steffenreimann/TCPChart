@@ -77,10 +77,18 @@ socket.on('onData', function (data) {
     }
 });
 
+function addAllData(data) {
+    chart.data.datasets.forEach((dataset) => {
+        if(dataset){
+
+        }
+    });
+}
+
 function addData(chart, label, data) {
     chart.data.datasets.forEach((dataset) => {
         if (dataset.label == label) {
-           // console.log(dataset);
+            console.log(dataset);
             dataset.data.push(data);
         }
         if(chart.data.datasets.length == 4){
@@ -188,19 +196,26 @@ function selectMotor(MotorID) {
 
 
 function connectTCP() {
+    console.log('Funcion connectTCP')
+    var ip = ''
+    var port = ''
     if(client_connected){
         set_led('tcp', 'red');
         console.log("Client Connected ... new conn ");
     }
     var str = get_val('CMDLine');
     if(str == ''){
-        var ip = ''
-        var port = ''
+        ip = ''
+        port = ''
     }else{
         var str_split = str.split(':');
-        var ip = str_split[0]
-        var port = str_split[1]
+        ip = str_split[0]
+        port = str_split[1]
     }
+    if(port == undefined){
+        port = ''
+    }
+    console.log(ip + ':' + port)
     socket.emit('connectTCP', {ip: ip, port: port});
 }
 function randomNumber(min, max) {
