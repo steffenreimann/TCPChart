@@ -1,7 +1,10 @@
 socket = io.connect();
 socket.emit('readAPI');
 socket.emit('test');
+//socket.emit('sendbtzcmd', 'test');
+
 var debug_data = [];
+var client_connected = false;
 initCLI('CMDLine');
 
 socket.on('sendbtzcmd', function (data) {
@@ -20,20 +23,48 @@ socket.on('readAPI', function (data) {
     console.log("DIR FOR = " + dir("REV"));
 });
 
+socket.on('connect', function () {
+    set_led('socketio', 'green');
+});
+socket.on('debug_sync', function (data) {
+    if(data.category == 'log'){
+        savelog(false);
+    }
+});
+
+socket.on('disconnect', () => {
+    set_led('socketio', 'red');
+    set_led('tcp', 'red');
+});
+socket.on('routeConnection', function (data) {
+    console.log("routeConnection Daten vom Server onData = ");
+    console.log(data);
+    client_connected = data.connected;
+    if(!data.connected){
+        set_led('tcp', 'red');
+    }
+    if(data.connected){
+        set_led('tcp', 'green');
+    }
+});
+
 socket.on('onData', function (data) {
     console.log("Daten vom Server onData = ");
     console.log(data);
+    //set_led('test', 'green');
     if(data.category == 'debug'){
-        data.response.forEach(element => {
-            console.log(element.time);
+        data.steering_pid.response.forEach(element => {
+            console.log(element);
             //debug_data.push(element);
             //cfg.data.datasets.data = debug_data;
-            var timee = time(element.time);
-            addData(chart, "Lenkung Ist", {y: element.current_position, x: timee})
-            addData(chart, "Lenkung Soll", {y: element.target_position, x: timee})
-            addData(chart, "ADC Power", {y: dac(element.dac_power, 'volt'), x: timee})
-            addData(chart, "Drehrichtung", {y: dir(element.direction), x: timee})
-            chart.data.labels.push(timee);
+            //var timee = time(element.time);
+            addData(chart, "Lenkung Ist", {y: element.current_position, x: element.time})
+            addData(chart, "Lenkung Soll", {y: element.target_position, x: element.time})
+            addData(chart, "ADC Power", {y: dac(element.dac_power, 'volt'), x: element.time})
+            addData(chart, "Drehrichtung", {y: dir(element.direction), x: element.time})
+            addData(chart, "Lenkung Freigabe", {y: element.enabled_motors.steering, x: element.time})
+            addData(chart, "Motor Freigabe", {y: element.enabled_motors.drive, x: element.time})
+            chart.data.labels.push(element.time);
             console.log("debug ----------");
         });
         
@@ -59,6 +90,112 @@ function removeData(chart) {
         dataset.data.pop();
     });
     chart.update();
+}
+
+var runningSave = false;
+function savelog(save) {
+    if (save) {
+        if (runningSave) {
+            //runningSave = false
+            set_led('savelog', 'red');
+            return 'run'
+        }else{
+            set_led('savelog', 'yellow');
+            runningSave = true
+            socket.emit('savelog');
+        }
+    }else{
+        if (runningSave) {
+            set_led('savelog', 'blue');
+            runningSave = false
+        }
+    }
+    
+    
+}
+
+function loadlog(){
+    var str = get_val('CMDLine');
+    socket.emit('loadlog', str);
+    chart.reset();
+}
+ function clearchart() {
+    removeData(chart)
+    //chart.clear();
+ }
+
+ function toggleFullscreen() {
+    let elem = document.querySelector("body");
+  
+    if (!document.fullscreenElement) {
+      elem.requestFullscreen().catch(err => {
+        alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+var runningMeasurement = false;
+function toggleMeasurement() {
+    if(runningMeasurement){
+        runningMeasurement = false;
+        var data = {isCMD: true, cmd: [{cmd: '', obj:{"category":"debug","command":"DEBUG_STEERING","data":{"mode":"s", "name": "subcriber", "state": false},"device":"mobil"}},
+                                        {cmd: '', obj:{"category":"debug","command":"DEBUG_ENABLE","data":{"mode":"s", "name": "subcriber", "state": false},"device":"mobil"}},
+                                        {cmd: '', obj:{"category":"debug","command":"START_STEERING_DEBUG","data":{"mode":"s", "name": "subcriber", "state": false},"device":"mobil"}}]}
+        run(data)
+        set_led('start', 'blue');
+    }else{
+        var data = {isCMD: true, cmd: [{cmd: '', obj:{"category":"debug","command":"DEBUG_STEERING","data":{"mode":"s", "name": "subcriber", "state": true},"device":"mobil"}},
+                                        {cmd: '', obj:{"category":"debug","command":"DEBUG_ENABLE","data":{"mode":"s", "name": "subcriber", "state": true},"device":"mobil"}},
+                                        {cmd: '', obj:{"category":"debug","command":"START_STEERING_DEBUG","data":{"mode":"s", "name": "subcriber", "state": true},"device":"mobil"}}]}
+        run(data)
+        runningMeasurement = true;
+        set_led('start', 'yellow');
+    }
+}
+
+var runningMotors = [false, false]
+function toggleMotor(MotorID) {
+    if(runningMotors[MotorID]){
+        runningMotors[MotorID] = false;
+        var data = {isCMD: true, cmd: [{cmd: '', obj:{"category":"control","command": selectMotor(MotorID),"data":{"mode":"s", "name": "drive", "state": false},"device":"mobil"}}]}
+        run(data)
+        set_led('motor' + MotorID, 'blue');
+    }else{
+        var data = {isCMD: true, cmd: [{cmd: '', obj:{"category":"control","command": selectMotor(MotorID),"data":{"mode":"s", "name": "drive", "state": true},"device":"mobil"}}]}
+        run(data)
+        runningMotors[MotorID] = true;
+        set_led('motor' + MotorID, 'yellow');
+    }
+}
+
+function selectMotor(MotorID) {
+   if (MotorID == 0 ) {
+       return 'ENABLE_CTRL'
+   }else if (MotorID == 1) {
+       return 'ENABLE_CTRL'
+   }
+}
+
+
+
+
+function connectTCP() {
+    if(client_connected){
+        set_led('tcp', 'red');
+        console.log("Client Connected ... new conn ");
+    }
+    var str = get_val('CMDLine');
+    if(str == ''){
+        var ip = ''
+        var port = ''
+    }else{
+        var str_split = str.split(':');
+        var ip = str_split[0]
+        var port = str_split[1]
+    }
+    socket.emit('connectTCP', {ip: ip, port: port});
 }
 function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
@@ -113,7 +250,21 @@ var cfg = {
         borderColor: "#c45850",
         fill: false,
         data: []
-      },]
+      },{
+        label: 'Lenkung Freigabe',
+        yAxisID: 'E',
+        steppedLine: 'before',
+        borderColor: "#c45850",
+        fill: false,
+        data: []
+      },{
+        label: 'Motor Freigabe',
+        yAxisID: 'F',
+        steppedLine: 'before',
+        borderColor: "#c45850",
+        fill: false,
+        data: []
+      }]
     },
     options: {
         responsive: true,
@@ -146,9 +297,25 @@ var cfg = {
             }, {
                 id: 'C',
                 type: 'linear',
-                position: 'right'
+                position: 'left'
             }, {
                 id: 'D',
+                type: 'linear',
+                position: 'right',
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 1
+                }
+            }, {
+                id: 'E',
+                type: 'linear',
+                position: 'right',
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 1
+                }
+            }, {
+                id: 'F',
                 type: 'linear',
                 position: 'right',
                 ticks: {

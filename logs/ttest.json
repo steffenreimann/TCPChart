@@ -1,0 +1,15 @@
+"debug":{
+    "category":"debug",
+    "steering_pid":{
+        "mode":["s"],
+        "command":"DEBUG_STEERING",
+        "description":"Returns an array with PID data while running the steering",
+        "request":{
+            "name":"subcriber",
+            "state":true
+        }
+
+
+
+        "{"category":"control","command":"ENABLE_CTRL","data":{"mode":"s","name":"drive","state":true},"device":"mobil"}"
+        "{"category":"debug","command":"DEBUG_STEERING","data":{"mode":"s","name":"subcriber","state":true},"device":"mobil"}"

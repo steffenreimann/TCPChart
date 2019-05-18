@@ -2,7 +2,9 @@
  * Created by Steffen Reimann on 16.05.19
  */
 
-var cmdarr = [{cmd: '!lol', obj:{"category":"config","command":"CFG_READ","data":{"mode":"rf"},"device":"mobil"}}, {cmd: '!update', obj:{"category":"config","command":"CFG_READ","data":{"mode":"rf"},"device":"mobil"}}]
+var cmdarr = [{cmd: '!lol', obj:{"category":"config","command":"CFG_READ","data":{"mode":"rf"},"device":"mobil"}},
+    {cmd: '!update', obj:{"category":"config","command":"CFG_READ","data":{"mode":"rf"},"device":"mobil"}}
+]
 
 var finalCMDs = [{cmd: '!update', obj:{"category":"config","command":"CFG_READ","data":{"mode":"rf"},"device":"mobil"}}, 
     {cmd: '!jamoin', obj:{"category":"config","command":"CFG_READ","data":{"mode":"rf"},"device":"mobil"}},
@@ -24,6 +26,7 @@ function initCLI(id) {
             console.log(str)
             var out = filter(str, cmdarr)
             console.log(out)
+            out.cmd = JSON.parse(out.cmd);
             run(out);
             $("#" + id).val("")
             
@@ -55,6 +58,10 @@ function initCLI(id) {
             $("#" + id).val(CMDLineHistory[CMDLineHistoryCounter])  
         }
     });
+}
+
+function get_val(id) {
+    return $("#" + id).val();
 }
 
 //zufiltender string ob es ein cmd enthält  

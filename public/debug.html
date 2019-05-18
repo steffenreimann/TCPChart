@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
      <!--Google Icon Font-->
      <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="main.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/led_lights.css" media="screen" />
 	<style>
 		canvas {
 			-moz-user-select: none;
@@ -24,13 +25,66 @@
         <!-- Footer Links -->
         <div class="container-fluid text-center text-md-left">
             <div class="row" style="margin-top: 16px;">
+                <div class="col-xs-12">  
+                    <div class="row">
+                        <div class="col-xs-1 led-box">
+                          <div id="socketio" class=" led-red"></div>
+                          <p>socket.IO Verbindung</p>
+                        </div>
+                          <div class="col-xs-1 led-box">
+                          <div onclick="connectTCP();" id="tcp" class="icon led-red"></div>
+                          <p>TCP Verbindung</p>
+                        </div>
+                        
+                        <div class="col-xs-1">
+                          
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="col-xs-6 led-box">
+                                <div onclick="toggleMotor(0);" id="motor0" class="icon led-blue"></div>
+                                <p>Freigabe Lenkung</p>
+                            </div>
+
+                            <div class="col-xs-6 led-box">
+                                <div onclick="toggleMotor(1);" id="motor1" class="icon led-blue"></div>
+                                <p>Freigabe Motor</p>
+                            </div>
+                        </div>
+                        <div class="col-xs-1">
+                          
+                        </div>
+                        <div class="col-xs-1 led-box">
+                                <div onclick="toggleMeasurement();" id="start" class="icon led-blue"></div>
+                                <p>Starte Messung</p>
+                              </div>
+                        
+                        <div class="col-xs-1 led-box">
+                          <div onclick="savelog('save');" id="savelog" class="icon led-blue"></div>
+                          <p>Speichern</p>
+                        </div>
+                        <div class="col-xs-1 led-box">
+                                <div onclick="loadlog()" id="loadlog" class="icon led-blue"></div>
+                                <p>Log Laden</p>
+                              </div>
+                        <div class="col-xs-1 led-box">
+                          <div onclick="clearchart();" id="clear" class="icon led-blue"></div>
+                          <p>Chart Löschen</p>
+                        </div>
+                        <div class="col-xs-1 text-right">
+                                  
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+            <div class="row" style="margin-top: 16px;">
                 <div class="col-xs-11">  
                     <div  class="form-group pmd-textfield">          
                         <input type="text" id="CMDLine" autocomplete="off"  placeholder="Nachricht Schreiben" class="form-control mit">
                     </div>
                 </div>
                 <div class="col-xs-1 text-right">
-                    <i type="button" class="block-tab c disable material-icons md-dark pmd-md" data-target="#complete-dialog" data-toggle="modal" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Verlinkung">add</i>        
+                        <i type="button" onclick="toggleFullscreen();" class="icon material-icons md-dark pmd-md">fullscreen</i>  
                 </div>
             </div>
         </div>
@@ -46,6 +100,7 @@
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="js/socket.io/dist/socket.io.js"></script>
+<script src="js/statusled.js"></script>
 <script src="js/cmdline.js"></script>
 <script src="js/api.js"></script>
 <script src="js/debug.js"></script>
