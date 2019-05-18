@@ -89,14 +89,21 @@ function set_error_callback(callback){
 }
 
 function on_data(data){
-    console.log("ondata");
-    console.log(data);
-    if(data_callback == null){
-        console.log("Data callback is null");
-        return;
-    }
-    json_object = JSON.parse(data);
-    data_callback(json_object);
+    try {
+        console.log("ondata");
+        console.log(data);
+        if(data_callback == null){
+            console.log("Data callback is null");
+            return;
+        }
+        json_object = JSON.parse(data);
+        data_callback(json_object);
+      }
+      catch(e) {
+            console.log("try error");
+            console.log(e);
+      }
+    
 }
 
 function on_error(error){

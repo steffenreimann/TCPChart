@@ -50,11 +50,17 @@ socket.on('routeConnection', function (data) {
 
 socket.on('onData', function (data) {
     console.log("Daten vom Server onData = ");
-    console.log(data);
+    //console.log(data);
     //set_led('test', 'green');
+    if (!Array.isArray(data)) {
+        //console.log(Array.isArray(data));
+        data.value = [data.value]
+        ///console.log(Array.isArray(data));
+    }
     if(data.category == 'debug'){
-        data.steering_pid.response.forEach(element => {
-            console.log(element);
+        
+        data.value.forEach(element => {
+            //console.log(element);
             //debug_data.push(element);
             //cfg.data.datasets.data = debug_data;
             //var timee = time(element.time);
@@ -65,7 +71,7 @@ socket.on('onData', function (data) {
             addData(chart, "Lenkung Freigabe", {y: element.enabled_motors.steering, x: element.time})
             addData(chart, "Motor Freigabe", {y: element.enabled_motors.drive, x: element.time})
             chart.data.labels.push(element.time);
-            console.log("debug ----------");
+            //console.log("debug ----------");
         });
         
     }
@@ -74,7 +80,7 @@ socket.on('onData', function (data) {
 function addData(chart, label, data) {
     chart.data.datasets.forEach((dataset) => {
         if (dataset.label == label) {
-            console.log(dataset);
+           // console.log(dataset);
             dataset.data.push(data);
         }
         if(chart.data.datasets.length == 4){

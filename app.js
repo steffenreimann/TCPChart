@@ -24,6 +24,7 @@ btz.ErrorCallback(on_btz_error);
 
  
 function connectTCP(data) {
+    console.log(data);
     btz.Connect(data.ip, data.port, function (connected) {
         console.log("TCP client is");
         console.log("Connected " + connected);
@@ -112,7 +113,7 @@ function on_request(data){
     btz.SendRequest(data);
 }
 function on_btz_data(data) {
-    console.log(data);
+    //console.log(data);
     work(data);
     if(data.category == 'debug'){
         work(data);
@@ -141,8 +142,8 @@ var WEBlog = [];
 function work(data) {
    WEBcache = data
    WEBlog.push(WEBcache);
-   console.log(WEBcache);
-   console.log(WEBlog);
+  // console.log(WEBcache);
+   //console.log(WEBlog);
 }
 
 var logindex = 0
@@ -178,9 +179,9 @@ function loadlog(id){
         }
         content = JSON.parse(data);
 
-        console.log(content);  
+        //console.log(content);  
         content.forEach(element => {
-            on_btz_data(element.debug)
+            on_btz_data(element)
         });
     });
 }

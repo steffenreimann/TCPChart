@@ -134,7 +134,7 @@ function run(data) {
     if(data.isCMD){
         data.cmd.forEach(element => {
             console.log("Run Element")
-            console.log(element)
+            //console.log(element)
             socket.emit('sendbtzcmd', element.obj);
         });
     }else{
