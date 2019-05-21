@@ -1,0 +1,67 @@
+<head>
+        <script
+        src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>   
+	<script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/min/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@1.8.0"></script>
+	<script src="/js/realtime_chart.js"></script>
+	<style>
+		.label {
+			display: inline-block;
+			text-align: right;
+			width: 90px;
+		}
+		.value {
+			display: inline-block;
+			text-align: left;
+			width: 60px;
+		}
+		.control {
+			width: 200px;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<canvas id="myChart"></canvas>
+	</div>
+	<p>
+		<button id="randomizeData">Randomize Data</button>
+		<button id="addDataset">Add Dataset</button>
+		<button id="removeDataset">Remove Dataset</button>
+		<button id="addData">Add Data</button>
+	</p>
+	<div>
+		<span class="label">duration:</span>
+		<span id="durationValue" class="value">20000</span>
+		<span><input type="range" min="1000" max="60000" step="100" value="20000" id="duration" class="control"></span>
+	</div>
+	<div>
+		<span class="label">ttl:</span>
+		<span id="ttlValue" class="value">60000</span>
+		<span><input type="range" min="1000" max="60000" step="100" value="60000" id="ttl" class="control"></span>
+	</div>
+	<div>
+		<span class="label">refresh:</span>
+		<span id="refreshValue" class="value">1000</span>
+		<span><input type="range" min="50" max="3000" step="50" value="1000" id="refresh" class="control"></span>
+	</div>
+	<div>
+		<span class="label">delay:</span>
+		<span id="delayValue" class="value">2000</span>
+		<span><input type="range" min="0" max="5000" step="100" value="2000" id="delay" class="control"></span>
+	</div>
+	<div>
+		<span class="label">frameRate:</span>
+		<span id="frameRateValue" class="value">30</span>
+		<span><input type="range" min="1" max="60" step="1" value="30" id="frameRate" class="control"></span>
+	</div>
+	<div>
+		<span class="label">pause:</span>
+		<span id="pauseValue" class="value">false</span>
+		<span><input type="checkbox" id="pause" class="control"></span>
+	</div>
+</body>

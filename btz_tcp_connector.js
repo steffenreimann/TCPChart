@@ -2,7 +2,7 @@
  * Created by jonas on 13.05.17.
  */
 var net = require('net');
-var btz_server_ip = "192.168.178.197";
+var btz_server_ip = "192.168.178.38";
 var btz_server_port = 55566;
 var client = net.Socket();
 var client_connected = false;
@@ -89,22 +89,24 @@ function set_error_callback(callback){
 }
 
 function on_data(data){
-    try {
+
+    console.log(data.toString('utf8'));
+    console.log(data);
+    buffer(data.toString('utf8'))
+}
+
+
+function buffer(data) {
         console.log("ondata");
-        console.log(data);
+        //console.log(data);
         if(data_callback == null){
-            console.log("Data callback is null");
+            //console.log("Data callback is null");
             return;
         }
         json_object = JSON.parse(data);
         data_callback(json_object);
-      }
-      catch(e) {
-            console.log("try error");
-            console.log(e);
-      }
-    
 }
+
 
 function on_error(error){
     client_connected = false;

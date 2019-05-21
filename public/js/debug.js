@@ -1,6 +1,6 @@
 socket = io.connect();
-socket.emit('readAPI');
-socket.emit('test');
+//socket.emit('readAPI');
+//socket.emit('test');
 //socket.emit('sendbtzcmd', 'test');
 
 var debug_data = [];
@@ -64,13 +64,13 @@ socket.on('onData', function (data) {
             //console.log(element);
             //debug_data.push(element);
             //cfg.data.datasets.data = debug_data;
-            //var timee = time(element.time);
-            addData(chart, "Lenkung Ist", {y: element.current_position, x: element.time})
-            addData(chart, "Lenkung Soll", {y: element.target_position, x: element.time})
-            addData(chart, "ADC Power", {y: dac(element.dac_power, 'volt'), x: element.time})
-            addData(chart, "Drehrichtung", {y: dir(element.direction), x: element.time})
-            addData(chart, "Lenkung Freigabe", {y: element.enabled_motors.steering, x: element.time})
-            addData(chart, "Motor Freigabe", {y: element.enabled_motors.drive, x: element.time})
+            var timee = Date.now();
+            addData(chart, "Lenkung Ist", {y: element.current_position, x: timee})
+            addData(chart, "Lenkung Soll", {y: element.target_position, x: timee})
+            addData(chart, "ADC Power", {y: dac(element.dac_power, 'volt'), x: timee})
+            addData(chart, "Drehrichtung", {y: dir(element.direction), x: timee})
+            addData(chart, "Lenkung Freigabe", {y: element.enabled_motors.steering, x: timee})
+            addData(chart, "Motor Freigabe", {y: element.enabled_motors.drive, x: timee})
             chart.data.labels.push(element.time);
             //console.log("debug ----------");
         });
@@ -301,7 +301,15 @@ var cfg = {
         },
         scales: {
             xAxes: [{
-                
+                type: 'realtime',
+				realtime: {
+					duration: 20000,
+					ttl: 60000,
+					refresh: 1000,
+					delay: 2000,
+					pause: false,
+					onRefresh: addData
+				},
                 display: true,
                 scaleLabel: {
                     display: true,
@@ -351,7 +359,20 @@ var cfg = {
                     stepSize: 1
                 }
             }]
-        }
+        },
+        tooltips: {
+			mode: 'nearest',
+			intersect: false
+		},
+		hover: {
+			mode: 'nearest',
+			intersect: false
+		},
+		plugins: {
+			streaming: {
+				frameRate: 60
+			}
+		}
     }
 };
 var chart = new Chart(ctx, cfg);
