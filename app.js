@@ -89,6 +89,7 @@ io.on('connection', function (socket) {
         savelog()
     });
     socket.on('loadlog', function(data){
+        console.log('loadlog');
         loadlog(data)
     });
 });
@@ -116,7 +117,7 @@ function on_btz_data(data) {
     //console.log(data);
     work(data);
     if(data.category == 'debug'){
-        work(data);
+        //work(data);
         io.sockets.emit('onData', data);
     }else{
         io.sockets.emit('sendbtzcmd', data);
@@ -177,13 +178,15 @@ function loadlog(id){
         if (err) {
             throw err;
         }
+       // console.log(data); 
         content = JSON.parse(data);
-
-        //console.log(content);  
-        content.forEach(element => {
-            on_btz_data(element)
-        });
+       // console.log(content);  
+    content.forEach(element => {
+       // console.log(element);
+        io.sockets.emit('onData', element);
     });
+    });
+    
 }
 
 
@@ -235,15 +238,4 @@ var another_cmd = get_cfg_object(100, {p: 10.0, i: 12.3, d: 123.23},{t_d_max: 1,
 console.log(test_cmd)  
 
 
-
-
 btz.DataCallback(on_btz_data);
-
-
-
-
-
-
-
-
-

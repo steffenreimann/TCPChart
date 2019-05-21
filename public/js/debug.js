@@ -37,8 +37,8 @@ socket.on('disconnect', () => {
     set_led('tcp', 'red');
 });
 socket.on('routeConnection', function (data) {
-    console.log("routeConnection Daten vom Server onData = ");
-    console.log(data);
+    //console.log("routeConnection Daten vom Server onData = ");
+    //console.log(data);
     client_connected = data.connected;
     if(!data.connected){
         set_led('tcp', 'red');
@@ -49,7 +49,7 @@ socket.on('routeConnection', function (data) {
 });
 
 socket.on('onData', function (data) {
-    console.log("Daten vom Server onData = ");
+   // console.log("Daten vom Server onData = ");
     //console.log(data);
     //set_led('test', 'green');
     if (!Array.isArray(data)) {
@@ -57,9 +57,10 @@ socket.on('onData', function (data) {
         data.value = [data.value]
         ///console.log(Array.isArray(data));
     }
-    if(data.category == 'debug'){
-        
-        data.value.forEach(element => {
+    if(data.debug.category == 'debug'){
+        //console.log('debug ');
+        //console.log(data.value);
+        data.debug.steering_pid.response.forEach(element => {
             //console.log(element);
             //debug_data.push(element);
             //cfg.data.datasets.data = debug_data;
@@ -88,15 +89,16 @@ function addAllData(data) {
 function addData(chart, label, data) {
     chart.data.datasets.forEach((dataset) => {
         if (dataset.label == label) {
-            console.log(dataset);
+            //console.log(dataset);
             dataset.data.push(data);
         }
         if(chart.data.datasets.length == 4){
+            //removeData(chart)
             //chart.data.labels.shift();
            // dataset.data.shift();
-        }
-        chart.update();
+        }  
     });
+    chart.update();
 }
 function removeData(chart) {
     chart.data.labels.pop();
@@ -129,9 +131,14 @@ function savelog(save) {
 }
 
 function loadlog(){
+    set_led('loadlog', 'yellow');
     var str = get_val('CMDLine');
+    console.log(str);
+    if(str == ''){
+        str = 'test-log.json'
+    }
     socket.emit('loadlog', str);
-    chart.reset();
+    console.log(str);
 }
  function clearchart() {
     removeData(chart)
