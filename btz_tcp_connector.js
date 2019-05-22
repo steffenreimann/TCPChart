@@ -90,8 +90,8 @@ function set_error_callback(callback){
 
 function on_data(data){
 
-    console.log(data.toString('utf8'));
-    console.log(data);
+    //console.log(data.toString('utf8'));
+    //console.log(data);
     buffer(data.toString('utf8'))
 }
 
@@ -103,8 +103,19 @@ function buffer(data) {
             //console.log("Data callback is null");
             return;
         }
-        json_object = JSON.parse(data);
-        data_callback(json_object);
+        var ok = false
+        try {
+            json_object = JSON.parse(data);
+            ok = true
+        } catch (error) {
+            console.log(error);
+            console.log(data);
+            ok = false
+        }
+        if(ok){
+            console.log(json_object);
+            data_callback(json_object);
+        }
 }
 
 

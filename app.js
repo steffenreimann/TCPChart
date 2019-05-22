@@ -17,7 +17,7 @@ app.get('/', function(req, res) {
 
 console.log('HTTP Server Läuft unter http://localhost:8080');
 
-
+var tcp_connected = false
 
 btz.DataCallback(on_btz_data);
 btz.ErrorCallback(on_btz_error);
@@ -28,6 +28,7 @@ function connectTCP(data) {
     btz.Connect(data.ip, data.port, function (connected) {
         console.log("TCP client is");
         console.log("Connected " + connected);
+        tcp_connected = connected
         if(connected){
             update_configs();
            // update_position();
@@ -39,6 +40,9 @@ function connectTCP(data) {
 
 
 io.on('connection', function (socket) {
+
+    routeConn({error: '', connected: tcp_connected})
+
     socket.on('cmd', function (data) {
         console.log('SocketIO = ' + data.cmd);
     });
@@ -134,17 +138,26 @@ function on_btz_error(error, connected) {
 }
 
 function routeConn(data) {
-    io.sockets.emit('routeConnection', data);
+    console.log(data);
+    tcp_connected = data.connected
+    io.sockets.emit('routeConnection', tcp_connected);
 }
 
 
 var WEBcache = {current_position: '', dac_power: '', direction: '', enabled_motors: {steering: false, drive: false}, target_position: '', time: ''}
 var WEBlog = [];
 function work(data) {
-   WEBcache = data
-   WEBlog.push(WEBcache);
+    var len = WEBlog.length
+    WEBcache = data
+    WEBlog.push(WEBcache);
+    if(len > 10){
+        console.log(len);
+        for (var i = len - 10; i > 0 ; i--) {
+            WEBlog.pop();
+        }
+        
+    }
   // console.log(WEBcache);
-   //console.log(WEBlog);
 }
 
 var logindex = 0

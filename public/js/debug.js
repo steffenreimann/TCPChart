@@ -37,30 +37,32 @@ socket.on('disconnect', () => {
     set_led('tcp', 'red');
 });
 socket.on('routeConnection', function (data) {
-    //console.log("routeConnection Daten vom Server onData = ");
-    //console.log(data);
-    client_connected = data.connected;
-    if(!data.connected){
+    console.log("routeConnection Daten vom Server onData = ");
+    console.log(data);
+    client_connected = data;
+    if(!client_connected){
         set_led('tcp', 'red');
+        
     }
-    if(data.connected){
+    if(client_connected){
         set_led('tcp', 'green');
+        
     }
 });
 
 socket.on('onData', function (data) {
-   // console.log("Daten vom Server onData = ");
-    //console.log(data);
+    console.log("Daten vom Server onData = ");
+    console.log(data);
     //set_led('test', 'green');
     if (!Array.isArray(data)) {
         //console.log(Array.isArray(data));
         data.value = [data.value]
         ///console.log(Array.isArray(data));
     }
-    if(data.debug.category == 'debug'){
+    if(data.category == 'debug'){
         //console.log('debug ');
         //console.log(data.value);
-        data.debug.steering_pid.response.forEach(element => {
+        data.value.forEach(element => {
             //console.log(element);
             //debug_data.push(element);
             //cfg.data.datasets.data = debug_data;
@@ -72,6 +74,8 @@ socket.on('onData', function (data) {
             addData(chart, "Lenkung Freigabe", {y: element.enabled_motors.steering, x: timee})
             addData(chart, "Motor Freigabe", {y: element.enabled_motors.drive, x: timee})
             chart.data.labels.push(element.time);
+            //setMotor(0, element.enabled_motors.steering)
+           // setMotor(1, element.enabled_motors.drive)
             //console.log("debug ----------");
         });
         
@@ -92,20 +96,45 @@ function addData(chart, label, data) {
             //console.log(dataset);
             dataset.data.push(data);
         }
-        if(chart.data.datasets.length == 4){
-            //removeData(chart)
-            //chart.data.labels.shift();
-           // dataset.data.shift();
-        }  
     });
+    //console.log("dataset");
+    removeData(chart);
     chart.update();
 }
+
+var chart_max_length = 50;
 function removeData(chart) {
-    chart.data.labels.pop();
+    //chart.data.labels.pop();
     chart.data.datasets.forEach((dataset) => {
-        dataset.data.pop();
+        var len = dataset.data.length
+        if(len > chart_max_length){
+            console.log(len);
+            for (var i = len - chart_max_length; i > 0 ; i--) {
+                dataset.data.shift();
+            }
+        }
     });
-    chart.update();
+   // chart.update();
+}
+
+var isRunning = false
+function ChartPause() {
+    if(!isRunning){
+        isRunning = true
+        $("#play").html("play_arrow");
+    }else{
+        isRunning = false
+        $("#play").html("pause");
+    }
+    cfg.options.scales.xAxes[0].realtime.pause = isRunning;
+    chart.update({duration: 0});
+}
+
+function set_fps() {
+    var fps = parseInt(get_val('CMDLine'));
+    console.log(fps);
+    cfg.options.plugins.streaming.frameRate = fps;
+    chart.update({duration: 0});
 }
 
 var runningSave = false;
@@ -126,8 +155,6 @@ function savelog(save) {
             runningSave = false
         }
     }
-    
-    
 }
 
 function loadlog(){
@@ -177,15 +204,19 @@ function toggleMeasurement() {
 }
 
 var runningMotors = [false, false]
-function toggleMotor(MotorID) {
+function toggleMotor(MotorID, send) {
     if(runningMotors[MotorID]){
         runningMotors[MotorID] = false;
         var data = {isCMD: true, cmd: [{cmd: '', obj:{"category":"control","command": selectMotor(MotorID),"data":{"mode":"s", "name": "drive", "state": false},"device":"mobil"}}]}
-        run(data)
+        if(send){
+            run(data)
+        }
         set_led('motor' + MotorID, 'blue');
     }else{
         var data = {isCMD: true, cmd: [{cmd: '', obj:{"category":"control","command": selectMotor(MotorID),"data":{"mode":"s", "name": "drive", "state": true},"device":"mobil"}}]}
-        run(data)
+        if(send){
+            run(data)
+        }
         runningMotors[MotorID] = true;
         set_led('motor' + MotorID, 'yellow');
     }
@@ -199,7 +230,16 @@ function selectMotor(MotorID) {
    }
 }
 
-
+function setMotor(MotorID, data) {
+    console.log("lol" + data);
+    if (data) {
+        runningMotors[MotorID] = true
+        set_led('motor' + MotorID, 'yellow');
+    }else{
+        runningMotors[MotorID] = false
+        set_led('motor' + MotorID, 'blue');
+    }
+}
 
 
 function connectTCP() {
@@ -225,6 +265,9 @@ function connectTCP() {
     console.log(ip + ':' + port)
     socket.emit('connectTCP', {ip: ip, port: port});
 }
+
+
+
 function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
 }
@@ -305,8 +348,8 @@ var cfg = {
 				realtime: {
 					duration: 20000,
 					ttl: 60000,
-					refresh: 1000,
-					delay: 2000,
+					refresh: 50,
+					delay: 100,
 					pause: false,
 					onRefresh: addData
 				},
@@ -371,7 +414,70 @@ var cfg = {
 		plugins: {
 			streaming: {
 				frameRate: 60
-			}
+            },
+            zoom: {
+                // Container for pan options
+                pan: {
+                    // Boolean to enable panning
+                    enabled: true,
+        
+                    // Panning directions. Remove the appropriate direction to disable
+                    // Eg. 'y' would only allow panning in the y direction
+                    mode: 'x',
+                    rangeMin: {
+                        // Format of min pan range depends on scale type
+                        x: null,
+                        y: null
+                    },
+                    rangeMax: {
+                        // Format of max pan range depends on scale type
+                        x: null,
+                        y: null
+                    },
+                    // Function called once panning is completed
+                    // Useful for dynamic data loading
+                    onPan: function({chart}) { console.log(`I was panned!!!`); }
+                },
+        
+                // Container for zoom options
+                zoom: {
+                    // Boolean to enable zooming
+                    enabled: true,
+        
+                    // Enable drag-to-zoom behavior
+                    drag: false,
+        
+                    // Drag-to-zoom rectangle style can be customized
+                    // drag: {
+                    // 	 borderColor: 'rgba(225,225,225,0.3)'
+                    // 	 borderWidth: 5,
+                    // 	 backgroundColor: 'rgb(225,225,225)'
+                    // },
+        
+                    // Zooming directions. Remove the appropriate direction to disable
+                    // Eg. 'y' would only allow zooming in the y direction
+                    mode: 'x',
+        
+                    rangeMin: {
+                        // Format of min zoom range depends on scale type
+                        x: null,
+                        y: null
+                    },
+                    rangeMax: {
+                        // Format of max zoom range depends on scale type
+                        x: null,
+                        y: null
+                    },
+        
+                    // Speed of zoom via mouse wheel
+                    // (percentage of zoom on a wheel event)
+                    speed: 0.1,
+        
+                    // Function called once zooming is completed
+                    // Useful for dynamic data loading
+                    onZoom: function({chart}) { console.log(`I was zoomed!!!`); }
+                }
+            }
 		}
     }
 };
