@@ -11,5 +11,48 @@
 
 
 
-        "{"category":"control","command":"ENABLE_CTRL","data":{"mode":"s","name":"drive","state":true},"device":"mobil"}"
-        "{"category":"debug","command":"DEBUG_STEERING","data":{"mode":"s","name":"subcriber","state":true},"device":"mobil"}"
+        {"category":"control","command":"ENABLE_CTRL","data":{"mode":"s","name":"drive","state":true},"device":"mobil"}
+        {"category":"debug","command":"DEBUG_STEERING","data":{"mode":"s","name":"subcriber","state":true},"device":"mobil"}
+
+        {"category":"debug","command":"DEBUG_STEERING", "rf": "rf"}
+
+        {"category": "config", "command": "CFG_STEERING_STATUS", "rf": "rf"}
+    
+        { category: 'config',
+            mode: 'rf',
+            command: 'CFG_STEERING_STATUS',
+            value:
+             { current_position: 0,
+               target_position: 0,
+               direction: 'NONE',
+               state: 0,
+               calibration_state: '\u0000',
+               calibration_pos: 0 },
+            error: { msg: '', code: 0 } }
+
+
+
+        {"category": "config", "command": "CFG_READ", "rf": "rf"}
+        { category: 'config',
+            mode: 'rf',
+            command: 'CFG_READ',
+            value:
+             { pid: { p: 0, i: 0, d: 0, sample_time: 0 },
+               thresholds:
+                { thrs_d_min: 0,
+                  thrs_d_max: 0,
+                  thrs_s_min: 0,
+                  thrs_s_max: 0,
+                  thrs_s_pos: 0 },
+               calibspeed: 0 },
+            error: { msg: '', code: 0 } }
+
+
+
+
+        {"category": "control", "command": "STP_ALL", "rf": "s"}
+        { category: 'control',
+            mode: 'ack_s',
+            command: 'STP_ALL',
+            value: { name: 'STP_ALL', value: true },
+            error: { msg: '', code: 0 } }

@@ -14,9 +14,9 @@ function dir(direction) {
 }
 function dac(val, out) {
     if(out == "freq"){
-        return mapping(val, 0, 4095, 0, 60).toFixed(2);
+        return parseInt(mapping(val, 0, 4095, 0, 60).toFixed(2));
     }else if(out == "volt") {
-        return mapping(val, 0, 4095, 0, 10).toFixed(2);
+        return parseInt(mapping(val, 0, 4095, 0, 10).toFixed(2));
     }
 }
 function time(data) {

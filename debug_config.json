@@ -1,0 +1,6 @@
+var DebugData_log = false;
+var ControlData_log = false;
+var ConfigData_log = true;
+var AllData_log = false;
+
+var log_lenght = 200

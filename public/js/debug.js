@@ -5,6 +5,7 @@ socket = io.connect();
 
 var debug_data = [];
 var client_connected = false;
+
 initCLI('CMDLine');
 
 socket.on('sendbtzcmd', function (data) {
@@ -50,7 +51,16 @@ socket.on('routeConnection', function (data) {
     }
 });
 
-socket.on('onData', function (data) {
+socket.on('onConfigData', function (data) {
+    console.log("Config Daten vom Server = ");
+    console.log(data);
+    
+});
+socket.on('onControlData', function (data) {
+    console.log("Control Daten vom Server = ");
+    console.log(data);
+});
+socket.on('onDebugData', function (data) {
     console.log("Daten vom Server onData = ");
     console.log(data);
     //set_led('test', 'green');
@@ -59,26 +69,35 @@ socket.on('onData', function (data) {
         data.value = [data.value]
         ///console.log(Array.isArray(data));
     }
+
+    if(data.category == 'config'){
+        console.log('config')
+    }
+
+
     if(data.category == 'debug'){
         //console.log('debug ');
         //console.log(data.value);
         data.value.forEach(element => {
-            //console.log(element);
-            //debug_data.push(element);
-            //cfg.data.datasets.data = debug_data;
-            var timee = Date.now();
-            addData(chart, "Lenkung Ist", {y: element.current_position, x: timee})
-            addData(chart, "Lenkung Soll", {y: element.target_position, x: timee})
-            addData(chart, "ADC Power", {y: dac(element.dac_power, 'volt'), x: timee})
-            addData(chart, "Drehrichtung", {y: dir(element.direction), x: timee})
-            addData(chart, "Lenkung Freigabe", {y: element.enabled_motors.steering, x: timee})
-            addData(chart, "Motor Freigabe", {y: element.enabled_motors.drive, x: timee})
-            chart.data.labels.push(element.time);
-            //setMotor(0, element.enabled_motors.steering)
-           // setMotor(1, element.enabled_motors.drive)
-            //console.log("debug ----------");
+            if(data.command == 'DEBUG_ENABLE'){
+                console.log("DEBUG_ENABLE = " + element.state);
+            }else if(data.command == 'DEBUG_STEERING'){
+                //console.log(element);
+                //debug_data.push(element);
+                //cfg.data.datasets.data = debug_data;
+                var timee = Date.now();
+                addData(chart, "Lenkung Ist", {y: element.current_position, x: timee})
+                addData(chart, "Lenkung Soll", {y: element.target_position, x: timee})
+                addData(chart, "ADC Power", {y: parseInt(dac(parseInt(element.dac_power), 'volt')), x: timee})
+                addData(chart, "Drehrichtung", {y: dir(element.direction), x: timee})
+                addData(chart, "Lenkung Freigabe", {y: element.enabled_motors.steering, x: timee})
+                addData(chart, "Motor Freigabe", {y: element.enabled_motors.drive, x: timee})
+                chart.data.labels.push(element.time);
+                //setMotor(0, element.enabled_motors.steering)
+                // setMotor(1, element.enabled_motors.drive)
+                //console.log("debug ----------");
+            }
         });
-        
     }
 });
 
@@ -131,7 +150,7 @@ function ChartPause() {
 }
 
 function set_fps() {
-    var fps = parseInt(get_val('CMDLine'));
+    var fps = get_val('CMDLine');
     console.log(fps);
     cfg.options.plugins.streaming.frameRate = fps;
     chart.update({duration: 0});
@@ -291,7 +310,7 @@ while (data.length < 60) {
 }
 var ctx = document.getElementById('myChart').getContext('2d');
 ctx.canvas.width = 1000;
-ctx.canvas.height = 300;
+ctx.canvas.height = 350;
 var color = Chart.helpers.color;
 var cfg = {
     type: 'line',
@@ -340,7 +359,10 @@ var cfg = {
     options: {
         responsive: true,
         legend: {
-            position: 'bottom'
+            position: 'bottom',
+            labels: {
+                padding: 0
+              }
         },
         scales: {
             xAxes: [{
@@ -348,8 +370,8 @@ var cfg = {
 				realtime: {
 					duration: 20000,
 					ttl: 60000,
-					refresh: 50,
-					delay: 100,
+					refresh: 10,
+					delay: 20,
 					pause: false,
 					onRefresh: addData
 				},
@@ -366,40 +388,62 @@ var cfg = {
                 }
             }],
             yAxes: [{
-            id: 'A',
-            type: 'linear',
-            position: 'left',
+                id: 'A',
+                type: 'linear',
+                position: 'left',
+                ticks: {
+                    suggestedMin: -1,
+                    suggestedMax: 11,
+                    
+                }
             }, {
-            id: 'B',
-            type: 'linear',
-            position: 'left'
+                id: 'B',
+                type: 'linear',
+                position: 'left',
+                ticks: {
+                    suggestedMin: -5000,
+                    suggestedMax: 5000
+                }
             }, {
                 id: 'C',
                 type: 'linear',
-                position: 'left'
+                position: 'left',
+                ticks: {
+                    suggestedMin: -5000,
+                    suggestedMax: 5000,
+                    display: false
+                }
             }, {
                 id: 'D',
                 type: 'linear',
                 position: 'right',
                 ticks: {
+                    suggestedMin: -0.5,
+                    suggestedMax: 1.5,
                     beginAtZero: true,
-                    stepSize: 1
+                    stepSize: 0.5
                 }
             }, {
                 id: 'E',
                 type: 'linear',
                 position: 'right',
                 ticks: {
+                    suggestedMin: -0.5,
+                    suggestedMax: 1.5,
                     beginAtZero: true,
-                    stepSize: 1
+                    stepSize: 0.5,
+                    display: false
                 }
             }, {
                 id: 'F',
                 type: 'linear',
                 position: 'right',
                 ticks: {
+                    suggestedMin: -0.5,
+                    suggestedMax: 1.5,
                     beginAtZero: true,
-                    stepSize: 1
+                    stepSize: 0.5,
+                    display: false
                 }
             }]
         },

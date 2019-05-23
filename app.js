@@ -96,6 +96,16 @@ io.on('connection', function (socket) {
         console.log('loadlog');
         loadlog(data)
     });
+
+    socket.on('sendByTemp', function(data){
+        console.log('sendByTemp');
+        console.log(data);
+        sendByTemp(data.category, data.command, data.rf)
+    });
+
+
+
+    
 });
 
 
@@ -117,16 +127,34 @@ function on_request(data){
     }
     btz.SendRequest(data);
 }
+
+var DebugData_log = false;
+var ControlData_log = false;
+var ConfigData_log = true;
+var AllData_log = false;
+
 function on_btz_data(data) {
     //console.log(data);
-    work(data);
     if(data.category == 'debug'){
         //work(data);
-        io.sockets.emit('onData', data);
-    }else{
-        io.sockets.emit('sendbtzcmd', data);
+        io.sockets.emit('onDebugData', data);
+        if(DebugData_log && !AllData_log){
+            work(data);
+        }
+    }else if(data.category == 'control'){
+        io.sockets.emit('onControlData', data);
+        if(ControlData_log && !AllData_log){
+            work(data);
+        }
+    }else if(data.category == 'config'){
+        io.sockets.emit('onConfigData', data);
+        if(ConfigData_log && !AllData_log){
+            work(data);
+        }
     }
-
+    if(AllData_log){
+        work(data);
+    }
 //    routeConn(data)
 }
 
@@ -146,13 +174,14 @@ function routeConn(data) {
 
 var WEBcache = {current_position: '', dac_power: '', direction: '', enabled_motors: {steering: false, drive: false}, target_position: '', time: ''}
 var WEBlog = [];
+var log_lenght = 200
 function work(data) {
     var len = WEBlog.length
     WEBcache = data
     WEBlog.push(WEBcache);
-    if(len > 10){
+    if(len > log_lenght){
         console.log(len);
-        for (var i = len - 10; i > 0 ; i--) {
+        for (var i = len - log_lenght; i > 0 ; i--) {
             WEBlog.pop();
         }
         
@@ -233,8 +262,15 @@ function get_template(category, command, mode) {
         console.error("mode not supported", mode);
         return null;
     }
-    var data = cmd.response;
-    data["mode"] = mode;
+    if (cmd.response != undefined) {
+        var data = cmd.response;
+        data["mode"] = mode;
+    }else[
+        data = {mode: mode}
+    ]
+    console.error("mode = ", mode);
+    console.error("data = ", data);
+    
     
     return {category: category, command: command, device: "mobil", data: data}
 
@@ -246,9 +282,18 @@ function get_cfg_object(calibspeed, pid, thresholds) {
     cmd.data.thresholds = thresholds;
     return cmd;
 }
-var test_cmd = get_template("config", "CFG_READ", "rf")
-var another_cmd = get_cfg_object(100, {p: 10.0, i: 12.3, d: 123.23},{t_d_max: 1, t_d_min: 1, t_s_max: 100, t_s_min: 50, t_s_pos: 1000});
-console.log(test_cmd)  
 
+function sendByTemp(category, command, rf, data) {
+    var test_cmd = get_template(category, command, rf)
+    console.log('sendByTemp data = ');
+    console.log(test_cmd);
+    var conn = btz.Send(test_cmd);
+    var da = {error: "", connected: conn}
+    routeConn(da);
+    //var test_cmd = get_template("config", "CFG_READ", "rf")
+}
+
+var another_cmd = get_cfg_object(100, {p: 10.0, i: 12.3, d: 123.23},{t_d_max: 1, t_d_min: 1, t_s_max: 100, t_s_min: 50, t_s_pos: 1000});
+//console.log(test_cmd)  
 
 btz.DataCallback(on_btz_data);
