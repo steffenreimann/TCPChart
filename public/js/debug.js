@@ -186,12 +186,13 @@ function loadlog(){
     socket.emit('loadlog', str);
     console.log(str);
 }
- function clearchart() {
+
+function clearchart() {
     removeData(chart)
     //chart.clear();
- }
+}
 
- function toggleFullscreen() {
+function toggleFullscreen() {
     let elem = document.querySelector("body");
   
     if (!document.fullscreenElement) {
@@ -201,7 +202,19 @@ function loadlog(){
     } else {
       document.exitFullscreen();
     }
-  }
+}
+
+
+function toggle_chart_line(id){
+    if(cfg.data.datasets[id].hidden){
+        cfg.data.datasets[id].hidden = false;
+        $("#chart_line" + id).html("visibility");
+    }else{
+        cfg.data.datasets[id].hidden = true;
+        $("#chart_line" + id).html("visibility_off");
+    }
+    chart.update({duration: 0});
+} 
 
 var runningMeasurement = false;
 function toggleMeasurement() {
@@ -310,7 +323,7 @@ while (data.length < 60) {
 }
 var ctx = document.getElementById('myChart').getContext('2d');
 ctx.canvas.width = 1000;
-ctx.canvas.height = 350;
+ctx.canvas.height = 400;
 var color = Chart.helpers.color;
 var cfg = {
     type: 'line',
@@ -320,18 +333,21 @@ var cfg = {
         yAxisID: 'A',
         borderColor: "#8e5ea2",
         fill: false,
+        hidden: false,
         data: []
       }, {
         label: 'Lenkung Soll',
         yAxisID: 'B',
         borderColor: "#3cba9f",
         fill: false,
+        hidden: false,
         data: []
       },{
         label: 'Lenkung Ist',
         yAxisID: 'C',
         borderColor: "#e8c3b9",
         fill: false,
+        hidden: false,
         data: []
       },{
         label: 'Drehrichtung',
@@ -339,6 +355,7 @@ var cfg = {
         steppedLine: 'before',
         borderColor: "#c45850",
         fill: false,
+        hidden: false,
         data: []
       },{
         label: 'Lenkung Freigabe',
@@ -346,12 +363,14 @@ var cfg = {
         steppedLine: 'before',
         borderColor: "#c45850",
         fill: false,
+        hidden: false,
         data: []
       },{
         label: 'Motor Freigabe',
         yAxisID: 'F',
         steppedLine: 'before',
         borderColor: "#c45850",
+        hidden: false,
         fill: false,
         data: []
       }]

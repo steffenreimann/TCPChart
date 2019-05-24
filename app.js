@@ -100,7 +100,7 @@ io.on('connection', function (socket) {
     socket.on('sendByTemp', function(data){
         console.log('sendByTemp');
         console.log(data);
-        sendByTemp(data.category, data.command, data.rf)
+        sendByTemp(data)
     });
 
 
