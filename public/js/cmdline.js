@@ -138,7 +138,7 @@ function run(data) {
             socket.emit('sendbtzcmd', element.obj);
         });
     }else{
-        socket.emit('sendByTemp', data.cmd);
+        socket.emit('sendbtzcmd', data.cmd);
     }
 }
 

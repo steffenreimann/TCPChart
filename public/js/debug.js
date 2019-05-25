@@ -63,9 +63,9 @@ socket.on('onConfigData', function (data) {
         $('#t_s_pos').val(data.value.thresholds.thrs_s_pos);
 
         $('#p_pid').val(data.value.pid.p);
-        $('#i_pid').val(data.value.pid.d);
+        $('#i_pid').val(data.value.pid.i);
         $('#d_pid').val(data.value.pid.d);
-        $('#samples_pid').val(data.value.pid.sample_time);
+        $('#sampels_pid').val(data.value.pid.sample_time);
 
         $('#calibspeed').val(data.value.calibspeed);
         
@@ -115,6 +115,73 @@ socket.on('onDebugData', function (data) {
         });
     }
 });
+
+
+function readPID() {
+    console.log('read pid');
+    var data = {isCMD: false, cmd: {"category":"config","command":"CFG_READ","data":{"mode":"rf"},"device":"mobil"}}
+    run(data)
+}
+
+function setPID() {
+
+    var t_d_min = $('#t_d_min').val();
+    var t_d_max = $('#t_d_max').val();
+
+    var t_s_min = $('#t_s_min').val();
+    var t_s_max = $('#t_s_max').val();
+    var t_s_pos = $('#t_s_pos').val();
+
+    var p_pid = $('#p_pid').val();
+    var i_pid = $('#i_pid').val();
+    var d_pid = $('#d_pid').val();
+    var sampels_pid = $('#sampels_pid').val();
+
+    var calibspeed = $('#calibspeed').val();
+
+
+    var data = {isCMD: false, cmd: {"category":"config",
+        "command":"CFG_WRITE",
+        "mode":"s",
+        "data":{
+            "pid": { 
+                "p": parseFloat(p_pid), 
+                "i": parseFloat(i_pid), 
+                "d": parseFloat(d_pid) },
+            "thresholds": { 
+                "thrs_d_min": parseInt(t_d_min), 
+                "thrs_d_max": parseInt(t_d_max), 
+                "thrs_s_min": parseInt(t_s_min), 
+                "thrs_s_max": parseInt(t_s_max), 
+                "thrs_s_pos": parseInt(t_s_pos) } 
+        },
+        "device":"mobil"
+        }}
+
+
+
+    var data2 = {isCMD: false, cmd: {"category":"config",
+        "command":"CFG_WRITE",
+        "data":{
+            "mode":"s",
+            "pid": { 
+                "p": p_pid, 
+                "i": i_pid, 
+                "d": d_pid },
+            "thresholds": { 
+                "thrs_d_min": t_d_min, 
+                "thrs_d_max": t_d_max, 
+                "thrs_s_min": t_s_min, 
+                "thrs_s_max": t_s_max, 
+                "thrs_s_pos": t_s_pos }
+        },
+        "device":"mobil"
+        }}
+        
+    console.log(data);
+    run(data)
+    //run(data2)
+}
 
 function addAllData(data) {
     chart.data.datasets.forEach((dataset) => {
