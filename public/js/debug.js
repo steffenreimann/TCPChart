@@ -54,7 +54,22 @@ socket.on('routeConnection', function (data) {
 socket.on('onConfigData', function (data) {
     console.log("Config Daten vom Server = ");
     console.log(data);
-    
+    if(data.command == "CFG_READ"){
+        $('#t_d_min').val(data.value.thresholds.thrs_d_min);
+        $('#t_d_max').val(data.value.thresholds.thrs_d_max);
+
+        $('#t_s_min').val(data.value.thresholds.thrs_s_min);
+        $('#t_s_max').val(data.value.thresholds.thrs_s_max);
+        $('#t_s_pos').val(data.value.thresholds.thrs_s_pos);
+
+        $('#p_pid').val(data.value.pid.p);
+        $('#i_pid').val(data.value.pid.d);
+        $('#d_pid').val(data.value.pid.d);
+        $('#samples_pid').val(data.value.pid.sample_time);
+
+        $('#calibspeed').val(data.value.calibspeed);
+        
+    }
 });
 socket.on('onControlData', function (data) {
     console.log("Control Daten vom Server = ");
