@@ -139,7 +139,6 @@ function setPID() {
 
     var calibspeed = $('#calibspeed').val();
 
-
     var data = {isCMD: false, cmd: {"category":"config",
         "command":"CFG_WRITE",
         "mode":"s",
@@ -157,8 +156,6 @@ function setPID() {
         },
         "device":"mobil"
         }}
-
-
 
     var data2 = {isCMD: false, cmd: {"category":"config",
         "command":"CFG_WRITE",
