@@ -98,7 +98,7 @@ function on_data(data){
 
 function buffer(data) {
         console.log("ondata");
-        //console.log(data);
+        console.log(data);
         if(data_callback == null){
             //console.log("Data callback is null");
             return;

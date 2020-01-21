@@ -76,8 +76,8 @@ socket.on('onControlData', function (data) {
     console.log(data);
 });
 socket.on('onDebugData', function (data) {
-    console.log("Daten vom Server onData = ");
-    console.log(data);
+    //console.log("Daten vom Server onData = ");
+    //console.log(data);
     //set_led('test', 'green');
     if (!Array.isArray(data)) {
         //console.log(Array.isArray(data));
@@ -95,7 +95,7 @@ socket.on('onDebugData', function (data) {
         //console.log(data.value);
         data.value.forEach(element => {
             if(data.command == 'DEBUG_ENABLE'){
-                console.log("DEBUG_ENABLE = " + element.state);
+                //console.log("DEBUG_ENABLE = " + element.state);
             }else if(data.command == 'DEBUG_STEERING'){
                 //console.log(element);
                 //debug_data.push(element);
@@ -105,8 +105,8 @@ socket.on('onDebugData', function (data) {
                 addData(chart, "Lenkung Soll", {y: element.target_position, x: timee})
                 addData(chart, "ADC Power", {y: parseInt(dac(parseInt(element.dac_power), 'volt')), x: timee})
                 addData(chart, "Drehrichtung", {y: dir(element.direction), x: timee})
-                addData(chart, "Lenkung Freigabe", {y: element.enabled_motors.steering, x: timee})
-                addData(chart, "Motor Freigabe", {y: element.enabled_motors.drive, x: timee})
+                //addData(chart, "Lenkung Freigabe", {y: element.enabled_motors.steering, x: timee})
+                //addData(chart, "Motor Freigabe", {y: element.enabled_motors.drive, x: timee})
                 chart.data.labels.push(element.time);
                 //setMotor(0, element.enabled_motors.steering)
                 // setMotor(1, element.enabled_motors.drive)
@@ -191,7 +191,7 @@ function addAllData(data) {
 function addData(chart, label, data) {
     chart.data.datasets.forEach((dataset) => {
         if (dataset.label == label) {
-            //console.log(dataset);
+            console.log(dataset);
             dataset.data.push(data);
         }
     });

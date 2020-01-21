@@ -131,7 +131,7 @@ function on_request(data){
 var DebugData_log = false;
 var ControlData_log = false;
 var ConfigData_log = true;
-var AllData_log = false;
+var AllData_log = true;
 
 function on_btz_data(data) {
     //console.log(data);
@@ -180,7 +180,7 @@ function work(data) {
     WEBcache = data
     WEBlog.push(WEBcache);
     if(len > log_lenght){
-        console.log(len);
+        //console.log(len);
         for (var i = len - log_lenght; i > 0 ; i--) {
             WEBlog.pop();
         }
@@ -216,7 +216,7 @@ function savelog() {
 function loadlog(id){
     var content;
     // First I want to read the file
-    fs.readFile('./logs/' + id, function read(err, data) {
+    fs.readFile('./logs/log-' + id + '.json', function read(err, data) {
         if (err) {
             throw err;
         }
