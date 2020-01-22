@@ -31,6 +31,9 @@ function connectTCP(data) {
         tcp_connected = connected
         if (connected) {
             update_configs();
+            dataStreamLog(function (err) {
+                console.log(err)
+            }, data.ip);
             // update_position();
         }
         var data = { error: null, connected: connected }
@@ -125,38 +128,41 @@ function on_request(data) {
     btz.SendRequest(data);
 }
 
-var DebugData_log = false;
-var ControlData_log = false;
-var ConfigData_log = false;
-var AllData_log = true;
 
+
+var DebugData_log = true;
+var AllData_log = false;
+
+//Daten gelangen über einen callback zu dieser function 
+//Außerdem werden die daten 
+
+/**
+* on TCP Data
+* @param {JSON} {JSON}
+*   
+*/
 function on_btz_data(data) {
     //console.log(data);
     if (data.category == 'debug') {
-        //work(data);
+        //Die Daten werden hier weiter an die socket.io clients verteilt.
         io.sockets.emit('onDebugData', data);
         if (DebugData_log && !AllData_log) {
-            work(data);
+            if(LogRsReady){
+                //Außerdem werden Die Daten in einem readable stream übergeben.
+                LogRstream.push(JSON.stringify(data));
+                LogRstream.push(',');
+            }
         }
-    } else if (data.category == 'control') {
-        io.sockets.emit('onControlData', data);
-        if (ControlData_log && !AllData_log) {
-            work(data);
-        }
-    } else if (data.category == 'config') {
-        io.sockets.emit('onConfigData', data);
-        if (ConfigData_log && !AllData_log) {
-            work(data);
-        }
-    }
+    } 
+    //Überprüft ob überhaupt gelogt werden soll
     if(AllData_log) {
+        //Überprüft ob der readable stream ready ist
         if(LogRsReady){
+            //Außerdem werden Die Daten in einem readable stream übergeben.
             LogRstream.push(JSON.stringify(data));
             LogRstream.push(',');
         }
-        work(data);
     }
-    //    routeConn(data)
 }
 
 function on_btz_error(error, connected) {
@@ -173,23 +179,9 @@ function routeConn(data) {
 }
 
 
-var WEBcache = { current_position: '', dac_power: '', direction: '', enabled_motors: { steering: false, drive: false }, target_position: '', time: '' }
-var WEBlog = [];
-var log_lenght = 200
-function work(data) {
-    var len = WEBlog.length
-    WEBcache = data
-    WEBlog.push(WEBcache);
-    if (len > log_lenght) {
-        //console.log(len);
-        for (var i = len - log_lenght; i > 0; i--) {
-            WEBlog.pop();
-        }
-    }
-    // console.log(WEBcache);
-}
 
 
+dataStreamLog
 
 //Save TCP Data Stream to File
 var LogWstream = ""
@@ -197,18 +189,27 @@ var LogRstream = ""
 var LogWsReady = false
 var LogRsReady = false
 
-function dataStreamLog(params) {
+//Init tcp to file stream
+
+/**
+* Save TCP Data Stream to File
+* @param {FunctionStringCallback} callback
+*   
+* @param {string} id
+*   
+*/
+function dataStreamLog(callback, id) {
     console.log("dataStreamLog");
     var dir = path.join(__dirname, 'logs')
     
-    
+    //getDir gibt die Files im Ordner und die Anzahl der logfiles zurück
     utils.getDir(function (data) {
         console.log("data");
         console.log(data);
 
         //set tmp Path 
         var num = data.LogFiles + 1
-        var fileName = num.toString() + '.json'
+        var fileName = num.toString() + id + '.json'
         var tmp_path = path.join(dir, 'log-' + fileName)
 
 
@@ -234,23 +235,19 @@ function dataStreamLog(params) {
         LogRstream.on('end', function () {
             LogWstream.end();
             console.log("--------------------end---------------------");
+            callback(true)
             return true
         });
-        LogRstream.on('error', function (data) {
+        LogRstream.on('error', function (err) {
             console.log('-- ERROR --');
-            console.log(data);
+            console.log(err);
             LogWstream.end();
+            callback(err)
             return false
         })
 
         console.log(tmp_path);
-        
-        
-
     }, dir)
-
-    
-
 }
 
 function savelog() {
@@ -364,4 +361,3 @@ var another_cmd = get_cfg_object(100, { p: 10.0, i: 12.3, d: 123.23 }, { t_d_max
 
 btz.DataCallback(on_btz_data);
 
-dataStreamLog();

@@ -23,6 +23,17 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
     fs.readdir(directoryPath, function (err, files) {
         //handling error
         if (err) {
@@ -40,3 +51,67 @@
         });
         WEBlog = [];
     });
+
+
+
+
+
+
+
+
+
+
+
+var ControlData_log = false;
+var ConfigData_log = false;
+
+    if (data.category == 'debug') {
+        //Die Daten werden hier weiter an die socket.io clients verteilt.
+        io.sockets.emit('onDebugData', data);
+        if (DebugData_log && !AllData_log) {
+            work(data);
+        }
+    } else if (data.category == 'control') {
+        io.sockets.emit('onControlData', data);
+        if (ControlData_log && !AllData_log) {
+            work(data);
+        }
+    } else if (data.category == 'config') {
+        io.sockets.emit('onConfigData', data);
+        if (ConfigData_log && !AllData_log) {
+            work(data);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    var WEBcache = { current_position: '', dac_power: '', direction: '', enabled_motors: { steering: false, drive: false }, target_position: '', time: '' }
+var WEBlog = [];
+var log_lenght = 200
+function work(data) {
+    var len = WEBlog.length
+    WEBcache = data
+    WEBlog.push(WEBcache);
+    if (len > log_lenght) {
+        //console.log(len);
+        for (var i = len - log_lenght; i > 0; i--) {
+            WEBlog.pop();
+        }
+    }
+    // console.log(WEBcache);
+}
