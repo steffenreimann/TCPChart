@@ -6,7 +6,7 @@ var btz = require('./btz_tcp_connector');
 var utils = require('./utils.js');
 var fs = require('fs');
 const path = require('path');
-const YAML = require('yaml')
+
 //const file          = fs.readFileSync('./yaml/api/api.yml', 'utf8')
 //var btzapi          = YAML.parse(file)
 const { Readable } = require('stream'); 

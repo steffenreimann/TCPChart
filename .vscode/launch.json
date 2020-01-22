@@ -15,7 +15,7 @@
         },{
             "type": "node",
             "request": "launch",
-            "name": "Launch Mac",
+            "name": "Launch UNIX",
             "program": "${workspaceFolder}/app.js",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"

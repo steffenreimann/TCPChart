@@ -1,6 +1,6 @@
 # PID Debugger
 
-Dowsload this Repo 
+Download this Repo 
 
 Install node.js and npm 
 
@@ -8,7 +8,7 @@ write ```npm install```
 
 Launch ```node app.js```
 
-Launch File for Win and Mac to launch VS Code Node Debugger 
+VSCode Debugger kann genutzt werden unter Linux und Mac muss im Dropdown im Reiter Debug auf Unix geändert werden
 
 http://localhost:8080/
 
