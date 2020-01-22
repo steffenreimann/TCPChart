@@ -85,12 +85,7 @@ socket.on('onDebugData', function (data) {
         ///console.log(Array.isArray(data));
     }
 
-    if(data.category == 'config'){
-        console.log('config')
-    }
-
-
-    if(data.category == 'debug'){
+  
         //console.log('debug ');
         //console.log(data.value);
         data.value.forEach(element => {
@@ -113,7 +108,7 @@ socket.on('onDebugData', function (data) {
                 //console.log("debug ----------");
             }
         });
-    }
+    
 });
 
 
@@ -397,7 +392,7 @@ while (data.length < 60) {
     date = date.clone().add(1, 'd');
     if (date.isoWeekday() <= 5) {
         data.push(randomBar(date, data[data.length - 1].y));
-        console.log("puish");
+        //console.log("puish");
     }
 }
 var ctx = document.getElementById('myChart').getContext('2d');

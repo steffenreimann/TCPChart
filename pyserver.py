@@ -20,26 +20,27 @@ while 1:
     data = conn.recv(BUFFER_SIZE)
     if not data: break
     print "received data:", data
-    # parse x:
+    # parse String to Python JSON:
     y = json.loads(data)
+    # the result is a Python dictionary:
     category = y["category"]
     command = y["command"]
     msg_data = y["data"] 
     device = y["device"]
-
-    # the result is a Python dictionary:
-    
+    state = msg_data["state"]
+    # If command START_STEERING_DEBUG in category debug 
     if category == "debug" and command == "START_STEERING_DEBUG":
+        #printing incomming Data
         print(category)
         print(command)
         print(msg_data)
         print(device)
         
-        state = msg_data["state"]
+        
         while state:
-            dac_power  = random.randrange(0, 2000)
-            target_position  = random.randrange(0, 1000)
-            current_position  = random.randrange(0, 1000)
+            dac_power = random.randrange(0, 2000)
+            target_position = random.randrange(0, 1000)
+            current_position = random.randrange(0, 1000)
             print("send msg ...")
             jsonData = {
                 "category":"debug",
@@ -52,11 +53,7 @@ while 1:
                         "target_position":target_position,
                         "current_position":current_position
                         }
-                    
-                    
             }
-            
-
             z = json.dumps(jsonData)
             conn.send(z)
             sleep(0.1)

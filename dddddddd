@@ -1,0 +1,42 @@
+  readStream.on('data', function (data) {
+        const isReady = Wstream.write(data);
+        if (!isReady) {
+            //wird der Inputstream gestoppt
+            readStream.pause();
+            //ist der resultstream wieder aufnahmefähig 
+            Wstream.once('drain', function () {
+                //wird der inputstream gestartet
+                readStream.resume();
+            });
+        }
+    });
+    readStream.on('end', function () {
+        Wstream.end();
+        console.log("Server // File end upload");
+        return true
+    });
+    readStream.on('error', function (data) {
+        console.log('-- ERROR -- server');
+        console.log(data);
+        return false
+    })
+
+
+
+    fs.readdir(directoryPath, function (err, files) {
+        //handling error
+        if (err) {
+            return console.log('Unable to scan directory: ' + err);
+        }
+        logindex = files.length
+        console.log('files lenght = ' + files.length)
+
+        logindex++
+        console.log('logindex = ' + logindex)
+        fs.writeFile("logs/log-" + logindex + ".json", JSON.stringify(WEBlog), (err) => {
+            logindex = 0
+            if (err) console.log(err);
+            console.log("Successfully Written to File.");
+        });
+        WEBlog = [];
+    });
