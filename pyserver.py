@@ -68,7 +68,7 @@ while 1:
             }
             json_msg = json.dumps(jsonData)
             conn.send(msg)
-            sleep(0.4)
+            sleep(0.1)
         pass
     #conn.send(data)  # echo
 conn.close()

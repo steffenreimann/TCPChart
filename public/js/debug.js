@@ -473,8 +473,6 @@ function PushData(data) {
     //console.log(data);
     var index = 0
             //removeData(chart);
-            
-       
     chart.data.datasets.forEach((dataset) => {
         var x = data[index]
         //console.log("data[index]");
@@ -484,8 +482,11 @@ function PushData(data) {
         //console.log('index');
         //console.log(index);
         if (dataset.yAxisID == index) {
-           //console.log(data);
-           dataset.data.push(x);
+           console.log(x);
+           if (x != undefined) {
+                dataset.data.push(x);
+           }
+           
            //chart.data.labels.push(x.x);
            
         }
@@ -536,7 +537,7 @@ var cfg = {
                 }
             },
         animation: {
-                duration: 0 // general animation time
+                duration: 10 // general animation time
         },
         hover: {
             animationDuration: 0 // duration of animations when hovering an item
@@ -548,8 +549,8 @@ var cfg = {
             xAxes: [{
                 type: 'realtime',
 				realtime: {
-					duration: 20000,
-					ttl: 20000,
+					duration: 12000,
+					ttl: 15000,
 					refresh: 10,
 					delay: 20,
 					pause: false,
