@@ -1,4 +1,7 @@
 socket = io.connect();
+
+
+
 //socket.emit('readAPI');
 //socket.emit('test');
 //socket.emit('sendbtzcmd', 'test');
@@ -75,6 +78,7 @@ socket.on('onControlData', function (data) {
     console.log("Control Daten vom Server = ");
     console.log(data);
 });
+
 socket.on('onDebugData', function (data) {
     //console.log("Daten vom Server onData = ");
     //console.log(data);
@@ -84,8 +88,6 @@ socket.on('onDebugData', function (data) {
         data.value = [data.value]
         ///console.log(Array.isArray(data));
     }
-
-  
         //console.log('debug ');
         //console.log(data.value);
         data.value.forEach(element => {
@@ -96,10 +98,10 @@ socket.on('onDebugData', function (data) {
                 //debug_data.push(element);
                 //cfg.data.datasets.data = debug_data;
                 var timee = Date.now();
-                addData(chart, "Lenkung Ist", {y: element.current_position, x: timee})
-                addData(chart, "Lenkung Soll", {y: element.target_position, x: timee})
-                addData(chart, "ADC Power", {y: parseInt(dac(parseInt(element.dac_power), 'volt')), x: timee})
-                addData(chart, "Drehrichtung", {y: dir(element.direction), x: timee})
+                //addData(chart, "Lenkung Ist", {y: element.current_position, x: timee})
+                //addData(chart, "Lenkung Soll", {y: element.target_position, x: timee})
+                //addData(chart, "ADC Power", {y: parseInt(dac(parseInt(element.dac_power), 'volt')), x: timee})
+                //addData(chart, "Drehrichtung", {y: dir(element.direction), x: timee})
                 //addData(chart, "Lenkung Freigabe", {y: element.enabled_motors.steering, x: timee})
                 //addData(chart, "Motor Freigabe", {y: element.enabled_motors.drive, x: timee})
                 chart.data.labels.push(element.time);
@@ -110,6 +112,7 @@ socket.on('onDebugData', function (data) {
         });
     
 });
+
 
 
 function readPID() {
@@ -175,40 +178,7 @@ function setPID() {
     //run(data2)
 }
 
-function addAllData(data) {
-    chart.data.datasets.forEach((dataset) => {
-        if(dataset){
 
-        }
-    });
-}
-
-function addData(chart, label, data) {
-    chart.data.datasets.forEach((dataset) => {
-        if (dataset.label == label) {
-            console.log(dataset);
-            dataset.data.push(data);
-        }
-    });
-    //console.log("dataset");
-    removeData(chart);
-    chart.update();
-}
-
-var chart_max_length = 50;
-function removeData(chart) {
-    //chart.data.labels.pop();
-    chart.data.datasets.forEach((dataset) => {
-        var len = dataset.data.length
-        if(len > chart_max_length){
-            console.log(len);
-            for (var i = len - chart_max_length; i > 0 ; i--) {
-                dataset.data.shift();
-            }
-        }
-    });
-   // chart.update();
-}
 
 var isRunning = false
 function ChartPause() {
@@ -399,55 +369,159 @@ var ctx = document.getElementById('myChart').getContext('2d');
 ctx.canvas.width = 1000;
 ctx.canvas.height = 400;
 var color = Chart.helpers.color;
+var dsl = 0
+socket.on('onRAWData', function (data) {
+    //console.log("RAW Daten vom Server = ");
+   // console.log(data);
+    RAW2Arr(data, function(data) {
+        var timee = Date.now();
+        //console.log(data);
+        //console.log(timee);
+        //var dsl = chart.data.datasets
+        //console.log(dsl);
+        
+        //dsl = dsl.length()
+        if(dsl < data.length -1){
+            dsl++
+            //console.log(timee);
+            var tmp = getDatasetTemplate(dsl)
+            PushDataset(tmp, function (cfg) {
+                console.log(cfg);
+            })
+        }
+        var tmp_a = []
+        //var num = Number(data[data.length-1])
+        var num = new Date()
+        for (let index = 0; index < data.length-1; index++) {
+            //var num2 = Number(data[index])
+            tmp_a.push({y: data[index], x: num })
+            if(index == data.length-2){
+                PushData(tmp_a)
+            }
+        }
+        //PushData({y: data[], x: data[data.length-1]})
+    })
+   
+    
+});
+function RAW2Arr(data, callback) {
+    //console.log(data);
+    var tmp_arr = []
+    for (let pos = 0; pos < data.length; pos++) {
+        const element = data.charAt(pos)
+        if(element == '$'){
+            tmp_arr.push('')
+        }else if(element == '?'){
+            tmp_arr.push('')
+        }else{
+            tmp_arr[tmp_arr.length -1] += element
+        }
+        if(data.length -1 == pos){
+            callback(tmp_arr)
+        }
+    }
+}
+
+function Arr2Obj(data, callback) {
+    
+}
+//{
+//    tmpDataset = {label: name,yAxisID: indexes,borderColor: borderColor,fill: false,hidden: false,data: []},
+//    yScale = {id: indexes,type: 'linear',position: 'left',ticks: {suggestedMin: -1,suggestedMax: 11,}}
+//}
+function getDatasetTemplate(label) {
+    var tmp = { Dataset: {label: label, yAxisID: '', borderColor: '#32a852', fill: true, hidden: false, data: []},
+                yScale: {id: indexes, type: 'linear', position: 'left', ticks: {suggestedMin: 0, suggestedMax: 2000}}
+            } 
+    return tmp
+}
+var indexes = 0
+function PushDataset(data, callback) {
+   // console.log(chart);
+   //var id = chart.data.datasets.length();
+   
+   data.Dataset.yAxisID = indexes
+   data.yScale.id = indexes
+   indexes++
+    chart.data.datasets.push(data.Dataset);
+    chart.options.scales.yAxes.push(data.yScale);
+    callback(cfg)
+}
+
+function PushDataArr(params) {
+    console.log("Pushdata");
+    console.log(data);
+    for (let index = 0; index < data.length -1; ) {
+        console.log('chart.data.datasets[index]' );
+        console.log(chart.data.datasets[index] );
+        var ds = chart.data.datasets[index] 
+        ds.data.push(data[index]);
+        console.log(ds );
+        chart.data.datasets[index] = ds
+        
+        if (index == data.length -1) {
+            //console.log(data);
+            //removeData(chart);
+            chart.update();
+        }
+        index++
+    }
+}
+
+function PushData(data) {
+    //console.log("Pushdata");
+    //console.log(data);
+    var index = 0
+            //removeData(chart);
+            
+       
+    chart.data.datasets.forEach((dataset) => {
+        var x = data[index]
+        //console.log("data[index]");
+        //console.log(data[index]);
+        //console.log("dataset.yAxisID");
+        //console.log(dataset.yAxisID);
+        //console.log('index');
+        //console.log(index);
+        if (dataset.yAxisID == index) {
+           //console.log(data);
+           dataset.data.push(x);
+           //chart.data.labels.push(x.x);
+           
+        }
+        index++
+    });
+    chart.update();
+    //console.log("dataset");
+    //
+    
+}
+
+var chart_max_length = 50;
+function removeData(chart) {
+    //chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+        var len = dataset.data.length
+        if(len > chart_max_length){
+            //console.log(len);
+            for (var i = len - chart_max_length; i > 0 ; i--) {
+                dataset.data.shift();
+            }
+        }
+    });
+   // chart.update();
+}
+function setDataset(id, data, callback) {
+    chart.data.datasets[id] = data
+    callback = cfg
+}
+function getDatasets(callback) {
+    return chart.data.datasets
+}
 var cfg = {
     type: 'line',
     data: {
-      datasets: [{
-        label: 'ADC Power',
-        yAxisID: 'A',
-        borderColor: "#8e5ea2",
-        fill: false,
-        hidden: false,
-        data: []
-      }, {
-        label: 'Lenkung Soll',
-        yAxisID: 'B',
-        borderColor: "#3cba9f",
-        fill: false,
-        hidden: false,
-        data: []
-      },{
-        label: 'Lenkung Ist',
-        yAxisID: 'C',
-        borderColor: "#e8c3b9",
-        fill: false,
-        hidden: false,
-        data: []
-      },{
-        label: 'Drehrichtung',
-        yAxisID: 'D',
-        steppedLine: 'before',
-        borderColor: "#c45850",
-        fill: false,
-        hidden: false,
-        data: []
-      },{
-        label: 'Lenkung Freigabe',
-        yAxisID: 'E',
-        steppedLine: 'before',
-        borderColor: "#c45850",
-        fill: false,
-        hidden: false,
-        data: []
-      },{
-        label: 'Motor Freigabe',
-        yAxisID: 'F',
-        steppedLine: 'before',
-        borderColor: "#c45850",
-        hidden: false,
-        fill: false,
-        data: []
-      }]
+      datasets: []
     },
     options: {
         responsive: true,
@@ -455,18 +529,31 @@ var cfg = {
             position: 'bottom',
             labels: {
                 padding: 0
-              }
+              },
+        elements: {
+                line: {
+                    tension: 0 // disables bezier curves
+                }
+            },
+        animation: {
+                duration: 0 // general animation time
+        },
+        hover: {
+            animationDuration: 0 // duration of animations when hovering an item
+        },
+        responsiveAnimationDuration: 0, // animation duration after a resize
+        showLines: true // disable for all datasets
         },
         scales: {
             xAxes: [{
                 type: 'realtime',
 				realtime: {
 					duration: 20000,
-					ttl: 60000,
+					ttl: 20000,
 					refresh: 10,
 					delay: 20,
 					pause: false,
-					onRefresh: addData
+					onRefresh: PushData
 				},
                 display: true,
                 scaleLabel: {
@@ -480,65 +567,7 @@ var cfg = {
                     }
                 }
             }],
-            yAxes: [{
-                id: 'A',
-                type: 'linear',
-                position: 'left',
-                ticks: {
-                    suggestedMin: -1,
-                    suggestedMax: 11,
-                    
-                }
-            }, {
-                id: 'B',
-                type: 'linear',
-                position: 'left',
-                ticks: {
-                    suggestedMin: -5000,
-                    suggestedMax: 5000
-                }
-            }, {
-                id: 'C',
-                type: 'linear',
-                position: 'left',
-                ticks: {
-                    suggestedMin: -5000,
-                    suggestedMax: 5000,
-                    display: false
-                }
-            }, {
-                id: 'D',
-                type: 'linear',
-                position: 'right',
-                ticks: {
-                    suggestedMin: -0.5,
-                    suggestedMax: 1.5,
-                    beginAtZero: true,
-                    stepSize: 0.5
-                }
-            }, {
-                id: 'E',
-                type: 'linear',
-                position: 'right',
-                ticks: {
-                    suggestedMin: -0.5,
-                    suggestedMax: 1.5,
-                    beginAtZero: true,
-                    stepSize: 0.5,
-                    display: false
-                }
-            }, {
-                id: 'F',
-                type: 'linear',
-                position: 'right',
-                ticks: {
-                    suggestedMin: -0.5,
-                    suggestedMax: 1.5,
-                    beginAtZero: true,
-                    stepSize: 0.5,
-                    display: false
-                }
-            }]
+            yAxes: []
         },
         tooltips: {
 			mode: 'nearest',
@@ -618,4 +647,6 @@ var cfg = {
 		}
     }
 };
+
+
 var chart = new Chart(ctx, cfg);

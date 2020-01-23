@@ -1,7 +1,9 @@
 import socket 
 import json
+import time
 from time import sleep
 import random
+import datetime
 
 TCP_IP = '127.0.0.1'
 TCP_PORT = 5005
@@ -38,10 +40,20 @@ while 1:
         
         
         while state:
-            dac_power = random.randrange(0, 2000)
-            target_position = random.randrange(0, 1000)
-            current_position = random.randrange(0, 1000)
-            print("send msg ...")
+            num1 = random.randrange(0, 2000)
+            num2 = random.randrange(0, 1000)
+            num3 = random.randrange(0, 1000)
+            num4 = random.randrange(0, 1000)
+            num5 = random.randrange(0, 2000)
+            num6 = random.randrange(0, 1000)
+            num7 = random.randrange(0, 1000)
+            num8 = random.randrange(0, 1000)
+            #print("send msg ...")
+            epoch_time = int(time.time())
+            #print(epoch_time)
+            msg_tmp = "${}${}${}${}${}${}${}${}?{}"
+            msg = msg_tmp.format(num1,num2,num3,num4,num5,num6,num7,num8,epoch_time)
+            #print(msg) 
             jsonData = {
                 "category":"debug",
                 "command":"DEBUG_STEERING",
@@ -49,14 +61,14 @@ while 1:
                         "time":1000,
                         "direction":"FOR",
                         "enabled_motors":{"steering":False,"drive":True},
-                        "dac_power": dac_power,
-                        "target_position":target_position,
-                        "current_position":current_position
+                        "testname": num1,
+                        "bestname":num2,
+                         "current_position":num3
                         }
             }
-            z = json.dumps(jsonData)
-            conn.send(z)
-            sleep(0.1)
+            json_msg = json.dumps(jsonData)
+            conn.send(msg)
+            sleep(0.4)
         pass
-    conn.send(data)  # echo
+    #conn.send(data)  # echo
 conn.close()

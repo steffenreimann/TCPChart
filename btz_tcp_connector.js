@@ -97,25 +97,38 @@ function on_data(data){
 
 
 function buffer(data) {
-        console.log("ondata");
+    data_callback(data);
+        //console.log("ondata");
+        var okJSON = false
+        var okString = false
         //console.log(data);
+
         if(data_callback == null){
             //console.log("Data callback is null");
             return;
         }
-        var ok = false
-        try {
+        var res = data.charAt(0)
+        if (res == "$") {
+            //console.log("String");
+            //data_callback(data);
+            return
+        }else{
+            try {
             json_object = JSON.parse(data);
-            ok = true
+            okJSON = true
         } catch (error) {
             console.log(error);
             console.log(data);
-            ok = false
+            okString = true
         }
-        if(ok){
+        if(okJSON){
             console.log("json_object");
-            data_callback(json_object);
+           // data_callback(json_object);
         }
+        }
+        
+
+        
 }
 
 

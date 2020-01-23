@@ -33,7 +33,7 @@ function connectTCP(data) {
             update_configs();
             dataStreamLog(function (err) {
                 console.log(err)
-            }, data.ip);
+            }, "data.ip");
             // update_position();
         }
         var data = { error: null, connected: connected }
@@ -130,8 +130,8 @@ function on_request(data) {
 
 
 
-var DebugData_log = true;
-var AllData_log = false;
+var DebugData_log = false;
+var AllData_log = true;
 
 //Daten gelangen über einen callback zu dieser function 
 //Außerdem werden die daten 
@@ -143,19 +143,38 @@ var AllData_log = false;
 */
 function on_btz_data(data) {
     //console.log(data);
+    var okJSON = false
+    var res = data.charAt(0)
+    if (res == "$") {
+        //console.log("String");
+        LogRstream.push(data);
+        io.sockets.emit('onRAWData', data);
+    }
     if (data.category == 'debug') {
+        try {
+            json_object = JSON.parse(data);
+            okJSON = true
+        } catch (error) {
+            console.log(error);
+            console.log(data);
+        }
+        if(okJSON){
+            console.log("json_object");
+            io.sockets.emit('onDebugData', data);
+           
+        }
         //Die Daten werden hier weiter an die socket.io clients verteilt.
-        io.sockets.emit('onDebugData', data);
+        
         if (DebugData_log && !AllData_log) {
             if(LogRsReady){
                 //Außerdem werden Die Daten in einem readable stream übergeben.
-                LogRstream.push(JSON.stringify(data));
+                LogRstream.push(data);
                 LogRstream.push(',');
             }
         }
     } 
     //Überprüft ob überhaupt gelogt werden soll
-    if(AllData_log) {
+    if(AllData_log && res != "$") {
         //Überprüft ob der readable stream ready ist
         if(LogRsReady){
             //Außerdem werden Die Daten in einem readable stream übergeben.
