@@ -19,7 +19,7 @@
     </style>
 </head>
 
-<body>
+<body onload="loadSettingsExt()">
     <canvas id="myChart"></canvas>
     <footer class="footer">
         <!-- Footer Links -->
@@ -34,9 +34,8 @@
                                 </div>
                                 <div class="col-xs-2 led-box">
                                     <div class="form-group pmd-textfield pmd-textfield-floating-label">
-                                        <select onclick="" class="select-simple form-control pmd-select2">
-                                            <option onclick="setVis('GlobaleSettings')" >Global</option>
-                                            <option onclick="setVis('DataSettings')" >other</option>
+                                        <select id="sel1" onclick="loadSettings()" class="select-simple form-control pmd-select2">
+                                            
                                         </select>
                                         <label></label>
                                     </div>
@@ -49,12 +48,24 @@
                                     <div id="DataSettingsIcon" title="Set Visibility Data Settings" onclick="setVis('DataSettings', 'DataSettingsIcon');"
                                         class="icon material-icons md-dark pmd-md">visibility</div>
                                 </div>
+                                <div class="col-xs-1 led-box">
+                                    <div id="pidrowIcon" title="Set Visibility Data Settings" onclick="setVis('pidrow', 'pidrowIcon');"
+                                        class="icon material-icons md-dark pmd-md">visibility</div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div id="pidrowIcon" title="Save Settings" onclick="SaveSettings();"
+                                        class="icon material-icons md-dark pmd-md">save</div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div id="pidrowIcon" title="Save Settings to browser or file" onclick="SaveSettingsExt();"
+                                        class="icon material-icons md-dark pmd-md">save</div>
+                                </div>
                             </div>
                             
                             <!-- Globale Settings -->
                             <div id="GlobaleSettings" class="row">
                                 <h5>Globale Settings</h5>
-                                    <div class="col-xs-1 led-box">
+                                    <div class="col-xs-2 led-box">
                                         <label for="">Duration</label>
                                         <div class="form-group pmd-textfield">
                                             <input type="text" title="Duration" id="Duration" autocomplete="off"
@@ -64,7 +75,7 @@
                                 
                                 
                                     
-                                    <div class="col-xs-1 led-box">
+                                    <div class="col-xs-2 led-box">
                                         <label for="">ttl</label>
                                         <div class="form-group pmd-textfield">
                                             <input type="text" title="ttl" id="ttl" autocomplete="off"
@@ -141,8 +152,8 @@
                             
 
 
-
-                            <div class="row">
+                            
+                            <div id="pidrow" class="row">
 
                                 <div class="col-xs-1 led-box">
                                     <div class="form-group pmd-textfield">

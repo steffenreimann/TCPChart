@@ -222,10 +222,20 @@ function loadGlobalSettings(params) {
     $('#Delay').val(realtime.delay);
 }
 
-function loadDataSettings(index) {
-    var dataset = cfg.data.datasets[index]
-    var scale = cfg.options.scales.yAxes[index]
 
+
+function loadSettings() {
+    var i = $('#sel1').val();    
+    loadDataSettings(i)
+    console.log(i)
+}
+function loadDataSettings(index) {
+    var dataset = chart.data.datasets[index]
+    var scale = chart.options.scales.yAxes[index]
+    console.log('index')
+    console.log(index)
+    console.log('dataset')
+    console.log(dataset)
     //{label: label, yAxisID: '', borderColor: '#32a852', fill: true, hidden: false, data: []}
     $('#label').val(dataset.label);
     $('#borderColor').val(dataset.borderColor);
@@ -234,7 +244,8 @@ function loadDataSettings(index) {
     $('#scalehidden').val(scale.display);
 }
 
-function SaveSettings(index) {
+function SaveSettings() {
+    var index = $('#sel1').val();  
     var dataset = cfg.data.datasets[index]
     var realtime = cfg.options.scales.xAxes[0].realtime
     console.log('dataset');
@@ -265,6 +276,85 @@ function SaveSettings(index) {
     chart.options.scales.xAxes[0].realtime.delay = Delay;
     chart.update();
 }
+//var tmp = {
+ //   Dataset: [{label: name,yAxisID: indexes,borderColor: borderColor,fill: false,hidden: false,data: []}],
+ //   yScale: [{id: indexes,type: 'linear',position: 'left',ticks: {suggestedMin: -1,suggestedMax: 11,}}]
+//}
+
+function loadSettingsExt(params) {
+    var settings = JSON.parse(localStorage.getItem("settings"))
+    chart.data.datasets = settings.Dataset
+    chart.options.scales.yAxes = settings.yScale
+    chart.data.datasets.forEach(element => {
+        addSelectOption({Dataset: element}, function (cfg) {
+            //console.log(cfg);
+        })
+    });
+    
+    renderSelectOptions('sel1', option)
+}
+
+function SaveSettingsExt(params) {
+    var tmpsettings = {
+    Dataset: {label: 'name',yAxisID: 'indexes',borderColor: 'borderColor',fill: false,hidden: false,data: []},
+    yScale: {id: indexes,type: 'linear',position: 'left',ticks: {suggestedMin: -1,suggestedMax: 11,}}
+}
+    var tmp = {
+        Dataset: [],
+        yScale: []
+    }
+   
+    chart.data.datasets.forEach(element => {
+        var tmpDataset =  {label: 1,yAxisID: 0,borderColor: 'borderColor',fill: false,hidden: false,data: []}
+console.log('element')
+console.log(element)
+        tmpDataset.label = element.label
+        tmpDataset.yAxisID = element.yAxisID
+        tmpDataset.borderColor = element.borderColor
+        tmpDataset.fill = element.fill
+        tmpDataset.hidden = element.hidden
+
+        tmp.Dataset.push(tmpDataset) 
+    });
+    tmp.yScale = chart.options.scales.yAxes
+    var str = JSON.stringify(tmp)
+//console.log(str)
+
+
+
+// Check browser support
+if (typeof(Storage) !== "undefined") {
+    // Store
+    localStorage.setItem("settings", str);
+    // Retrieve
+    console.log( JSON.parse(localStorage.getItem("settings")) )
+  } else {
+    document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
+  }
+}
+
+
+var option = []
+function addSelectOption(data, callback) {
+        var index = option.length
+        option.push(data)
+        callback(index) 
+}
+function delSelectOption(index) {
+    
+}
+//renderSelectOptions('sel1', data)
+
+function renderSelectOptions(DOMelement, option) {
+    console.log(option)
+    var tmp = ``
+    option.forEach(element => {
+        tmp += `<option value="${element.Dataset.yAxisID}">ID:${element.Dataset.yAxisID}  Label:${element.Dataset.label}</option>`
+    });
+
+    $('#' + DOMelement).html(tmp);
+    loadSettings()
+}
 
 
 var runningSave = false;
@@ -286,7 +376,6 @@ function savelog(save) {
         }
     }
 }
-
 function loadlog(){
     set_led('loadlog', 'yellow');
     var str = get_val('CMDLine');
@@ -297,12 +386,10 @@ function loadlog(){
     socket.emit('loadlog', str);
     console.log(str);
 }
-
 function clearchart() {
     removeData(chart)
     //chart.clear();
 }
-
 function toggleFullscreen() {
     let elem = document.querySelector("body");
   
@@ -314,8 +401,6 @@ function toggleFullscreen() {
       document.exitFullscreen();
     }
 }
-
-
 function toggle_chart_line(id, iconID){
     if(cfg.data.datasets[id].hidden){
         cfg.data.datasets[id].hidden = false;
@@ -326,7 +411,6 @@ function toggle_chart_line(id, iconID){
     }
     chart.update({duration: 0});
 } 
-
 var runningMeasurement = false;
 function toggleMeasurement() {
     if(runningMeasurement){
@@ -345,7 +429,6 @@ function toggleMeasurement() {
         set_led('start', 'yellow');
     }
 }
-
 var runningMotors = [false, false]
 function toggleMotor(MotorID, send) {
     if(runningMotors[MotorID]){
@@ -364,7 +447,6 @@ function toggleMotor(MotorID, send) {
         set_led('motor' + MotorID, 'yellow');
     }
 }
-
 function selectMotor(MotorID) {
    if (MotorID == 0 ) {
        return 'ENABLE_CTRL'
@@ -372,7 +454,6 @@ function selectMotor(MotorID) {
        return 'ENABLE_CTRL'
    }
 }
-
 function setMotor(MotorID, data) {
     console.log("lol" + data);
     if (data) {
@@ -383,8 +464,6 @@ function setMotor(MotorID, data) {
         set_led('motor' + MotorID, 'blue');
     }
 }
-
-
 function connectTCP() {
     console.log('Funcion connectTCP')
     var ip = ''
@@ -408,9 +487,6 @@ function connectTCP() {
     console.log(ip + ':' + port)
     socket.emit('connectTCP', {ip: ip, port: port});
 }
-
-
-
 function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
 }
@@ -455,6 +531,10 @@ socket.on('onRAWData', function (data) {
             PushDataset(tmp, function (cfg) {
                 console.log(cfg);
             })
+            addSelectOption(tmp, function (cfg) {
+                console.log(cfg);
+            })
+            renderSelectOptions('sel1', option)
         }
         var tmp_a = []
         //var num = Number(data[data.length-1])
@@ -464,6 +544,7 @@ socket.on('onRAWData', function (data) {
             tmp_a.push({y: data[index], x: num })
             if(index == data.length-2){
                 PushData(tmp_a)
+                
             }
         }
         //PushData({y: data[], x: data[data.length-1]})
