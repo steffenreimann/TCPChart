@@ -2,178 +2,307 @@
 <html>
 
 <head>
-	<title>Debug BTZ Lenkung</title>
-	  
+    <title>Debug BTZ Lenkung</title>
+
     <link rel="stylesheet" href="css/bootstrap.min.css">
-     <!--Google Icon Font
+    <!--Google Icon Font
      <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
-     <link href="css/font_goggle.css" rel="stylesheet">
+    <link href="css/font_goggle.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/main.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="css/led_lights.css" media="screen" />
-	<style>
-		canvas {
-			-moz-user-select: none;
-			-webkit-user-select: none;
-			-ms-user-select: none;
-		}
-	</style>
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
 </head>
 
 <body>
-	<canvas id="myChart"></canvas>
+    <canvas id="myChart"></canvas>
     <footer class="footer">
         <!-- Footer Links -->
-      <div class="container-fluid text-center text-md-left">  
-        <div class="collapse" id="collapseExample">
-
-            <div class="card card-body">
-                <div class="row" style="margin-top: 16px;">
-                    <div class="col-xs-12">  
-                        <div class="row">
-                            <div class="col-xs-1 led-box">
-                                <div  class="form-group pmd-textfield">          
-                                    <button onclick="readPID();" class="icon btn btn-primary">Read PID</button>
-                                </div>
-                            </div>
-                        
-                            <div class="col-xs-1 led-box">   
-                                <div  class="form-group pmd-textfield">          
-                                    <input type="text" title="t_d_min" id="t_d_min" autocomplete="off"  placeholder="t_d_min" class="form-control mit">
-                                </div>
-                            </div>
-                            <div class="col-xs-1 led-box">   
-                                <div  class="form-group pmd-textfield">          
-                                    <input type="text" title="t_d_max" id="t_d_max" autocomplete="off"  placeholder="t_d_max" class="form-control mit">
-                                </div>
-                            </div>
-                            <div class="col-xs-1 led-box">   
-                                <div  class="form-group pmd-textfield">          
-                                    <input type="text" title="t_s_min" id="t_s_min" autocomplete="off"  placeholder="t_s_min" class="form-control mit">
-                                </div>
-                            </div>
-
-                            <div class="col-xs-1 led-box">   
-                                <div  class="form-group pmd-textfield">          
-                                    <input type="text" title="t_s_max" id="t_s_max" autocomplete="off"  placeholder="t_s_max" class="form-control mit">
-                                </div>
-                            </div>
-                            <div class="col-xs-1 led-box">
-                                <div  class="form-group pmd-textfield">          
-                                    <input type="text" title="t_s_pos" id="t_s_pos" autocomplete="off"  placeholder="t_s_pos" class="form-control mit">
-                                </div>
-                            </div>
-                            <div class="col-xs-1 led-box">
-                                <div  class="form-group pmd-textfield">          
-                                    <input type="text" title="calibspeed" id="calibspeed" autocomplete="off"  placeholder="calibspeed" class="form-control mit">
-                                </div>
-                            </div>
-                            <div class="col-xs-1 led-box">
-                                <div  class="form-group pmd-textfield">          
-                                    <input type="text" title="P" id="p_pid" autocomplete="off"  placeholder="Proportional Regler" class="form-control mit">
-                                </div>
-                            </div>
-
-                            <div class="col-xs-1 led-box">
-                                <div  class="form-group pmd-textfield">          
-                                    <input type="text" title="I" id="i_pid" autocomplete="off"  placeholder="Integral Regler" class="form-control mit">
-                                </div>
-                            </div>
-
-                            <div class="col-xs-1 led-box">
-                                <div  class="form-group pmd-textfield">          
-                                    <input type="text" title="D" id="d_pid" autocomplete="off"  placeholder="Differential Regler" class="form-control mit">
-                                </div>
-                            </div>
-                            <div class="col-xs-1 led-box">
-                                <div  class="form-group pmd-textfield">          
-                                    <input type="text" title="PID Sampels" id="sampels_pid" autocomplete="off"  placeholder="Sampels" class="form-control mit">
-                                </div>
-                            </div>
-                            <div class="col-xs-1 led-box">
-                                <div  class="form-group pmd-textfield">          
-                                    <button onclick="setPID();" class="icon btn btn-primary">Set PID</button>
-                                </div>
-                            </div>
-
-                            
-                        </div>
-                    </div> 
-                </div>
-            </div>
-            <div class="card card-body">
+        <div class="container-fluid text-center text-md-left">
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
                     <div class="row" style="margin-top: 16px;">
-                        <div class="col-xs-12">  
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-2 ">
+                                    <h4>Chart Settings</h4>
+                                </div>
+                                <div class="col-xs-2 led-box">
+                                    <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                                        <select onclick="" class="select-simple form-control pmd-select2">
+                                            <option onclick="setVis('GlobaleSettings')" >Global</option>
+                                            <option onclick="setVis('DataSettings')" >other</option>
+                                        </select>
+                                        <label></label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div id="GlobaleSettingsIcon" title="Set Visibility Globale Settings" onclick="setVis('GlobaleSettings', 'GlobaleSettingsIcon');"
+                                        class="icon material-icons md-dark pmd-md">visibility</div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div id="DataSettingsIcon" title="Set Visibility Data Settings" onclick="setVis('DataSettings', 'DataSettingsIcon');"
+                                        class="icon material-icons md-dark pmd-md">visibility</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Globale Settings -->
+                            <div id="GlobaleSettings" class="row">
+                                <h5>Globale Settings</h5>
+                                    <div class="col-xs-1 led-box">
+                                        <label for="">Duration</label>
+                                        <div class="form-group pmd-textfield">
+                                            <input type="text" title="Duration" id="Duration" autocomplete="off"
+                                                placeholder="15000" class="form-control mit">
+                                        </div>
+                                    </div>
+                                
+                                
+                                    
+                                    <div class="col-xs-1 led-box">
+                                        <label for="">ttl</label>
+                                        <div class="form-group pmd-textfield">
+                                            <input type="text" title="ttl" id="ttl" autocomplete="off"
+                                                placeholder="15000" class="form-control mit">
+                                        </div>
+                                    </div>
+                                
+                               
+                                    
+                                    <div class="col-xs-1 led-box">
+                                        <label for="">Refresh</label>
+                                        <div class="form-group pmd-textfield">
+                                            <input type="text" title="Refresh" id="Refresh" autocomplete="off"
+                                                placeholder="100" class="form-control mit">
+                                        </div>
+                                    </div>
+                                
+                                
+                                    
+                                    <div class="col-xs-1 led-box">
+                                        <label for="">Delay</label>
+                                        <div class="form-group pmd-textfield">
+                                            <input type="text" title="Delay" id="Delay" autocomplete="off"
+                                                placeholder="20" class="form-control mit">
+                                        </div>
+                                    </div>
+
+                                    
+                                
+                            </div>
+
+
+                            <!-- Data Settings -->
+                            <div id="DataSettings" class="row" style="margin-top: 16px; margin-bottom: 16px;">
+                                <h5>Data Settings</h5>
+                                <div class="col-xs-2 led-box">
+                                    <label for="">Label</label>
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="Label" id="label" autocomplete="off"
+                                            placeholder="0" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-2 led-box">
+                                    <label for="">Border Color</label>
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="borderColor" id="borderColor" autocomplete="off"
+                                            placeholder="20" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-2 led-box">
+                                    <label for="">Fill</label>
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="fill" id="fill" autocomplete="off"
+                                            placeholder="20" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-2 led-box">
+            
+                                    <label for="">Hidden</label>
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="hidden" id="hidden" autocomplete="off"
+                                            placeholder="false" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-2 led-box">
+            
+                                    <label for="">Y Scale display</label>
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="scalehidden" id="scalehidden" autocomplete="off"
+                                            placeholder="false" class="form-control mit">
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+
+
+                            <div class="row">
+
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <button onclick="readPID();" class="icon btn btn-primary">Read PID</button>
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="t_d_min" id="t_d_min" autocomplete="off"
+                                            placeholder="t_d_min" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="t_d_max" id="t_d_max" autocomplete="off"
+                                            placeholder="t_d_max" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="t_s_min" id="t_s_min" autocomplete="off"
+                                            placeholder="t_s_min" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="t_s_max" id="t_s_max" autocomplete="off"
+                                            placeholder="t_s_max" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="t_s_pos" id="t_s_pos" autocomplete="off"
+                                            placeholder="t_s_pos" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="calibspeed" id="calibspeed" autocomplete="off"
+                                            placeholder="calibspeed" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="P" id="p_pid" autocomplete="off"
+                                            placeholder="Proportional Regler" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="I" id="i_pid" autocomplete="off"
+                                            placeholder="Integral Regler" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="D" id="d_pid" autocomplete="off"
+                                            placeholder="Differential Regler" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <input type="text" title="PID Sampels" id="sampels_pid" autocomplete="off"
+                                            placeholder="Sampels" class="form-control mit">
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 led-box">
+                                    <div class="form-group pmd-textfield">
+                                        <button onclick="setPID();" class="icon btn btn-primary">Set PID</button>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card card-body">
+                    <div class="row" style="margin-top: 16px;">
+                        <div class="col-xs-12">
                             <div class="row">
                                 <div class="col-xs-1 led-box">
-                                    <div id="play" title="Play Pause" onclick="ChartPause();" class="icon material-icons md-dark pmd-md">pause_arrow</div>
+                                    <div id="play" title="Play Pause" onclick="ChartPause();"
+                                        class="icon material-icons md-dark pmd-md">pause_arrow</div>
                                 </div>
                                 <div class="col-xs-1 led-box">
-                                    <div id="play" title="Set FPS" onclick="set_fps();" class="icon material-icons md-dark pmd-md">shutter_speed</div>
+                                    <div id="play" title="Set FPS" onclick="set_fps();"
+                                        class="icon material-icons md-dark pmd-md">shutter_speed</div>
                                 </div>
-                                
+
                                 <div class="col-xs-3">
                                     <div class="col-xs-6 led-box">
-                                        
+
                                     </div>
-        
+
                                     <div class="col-xs-6 led-box">
-                                        
+
                                     </div>
                                 </div>
-                                
-    
+
+
                                 <div class="col-xs-1 led-box">
-                                    <div id="chart_line0" title="Set FPS" onclick="toggle_chart_line(0);" class="icon material-icons md-dark pmd-md">visibility</div>     
+                                    <div id="chart_line0" title="Set FPS" onclick="toggle_chart_line(0);"
+                                        class="icon material-icons md-dark pmd-md">visibility</div>
                                 </div>
                                 <div class="col-xs-1 led-box">
-                                    <div id="chart_line1" title="Set FPS" onclick="toggle_chart_line(1);" class="icon material-icons md-dark pmd-md">visibility</div>     
+                                    <div id="chart_line1" title="Set FPS" onclick="toggle_chart_line(1);"
+                                        class="icon material-icons md-dark pmd-md">visibility</div>
                                 </div>
                                 <div class="col-xs-1 led-box">
-                                    <div id="chart_line2" title="Set FPS" onclick="toggle_chart_line(2);" class="icon material-icons md-dark pmd-md">visibility</div>     
+                                    <div id="chart_line2" title="Set FPS" onclick="toggle_chart_line(2);"
+                                        class="icon material-icons md-dark pmd-md">visibility</div>
                                 </div>
-                                
+
                                 <div class="col-xs-1 led-box">
-                                    <div id="chart_line3" title="Set FPS" onclick="toggle_chart_line(3);" class="icon material-icons md-dark pmd-md">visibility</div>
+                                    <div id="chart_line3" title="Set FPS" onclick="toggle_chart_line(3);"
+                                        class="icon material-icons md-dark pmd-md">visibility</div>
                                 </div>
-    
+
                                 <div class="col-xs-1 led-box">
-                                    <div id="chart_line4" title="Set FPS" onclick="toggle_chart_line(4);" class="icon material-icons md-dark pmd-md">visibility</div>
+                                    <div id="chart_line4" title="Set FPS" onclick="toggle_chart_line(4);"
+                                        class="icon material-icons md-dark pmd-md">visibility</div>
                                 </div>
-    
+
                                 <div class="col-xs-1 led-box">
-                                    <div id="chart_line5" title="Set FPS" onclick="toggle_chart_line(5);" class="icon material-icons md-dark pmd-md">visibility</div>
-                                    
+                                    <div id="chart_line5" title="Set FPS" onclick="toggle_chart_line(5);"
+                                        class="icon material-icons md-dark pmd-md">visibility</div>
+
                                 </div>
-    
+
                                 <div class="col-xs-1 ">
-                                    
+
                                 </div>
-    
+
                             </div>
-                        </div> 
+                        </div>
                     </div>
                 </div>
 
 
 
+            </div>
         </div>
-      </div>  
 
         <div class="container-fluid text-center text-md-left">
             <div class="row" style="margin-top: 16px;">
-                <div class="col-xs-12">  
+                <div class="col-xs-12">
                     <div class="row">
                         <div class="col-xs-1 led-box">
-                          <div id="socketio" class=" led-red"></div>
-                          <p>socket.IO Verbindung</p>
+                            <div id="socketio" class=" led-red"></div>
+                            <p>socket.IO Verbindung</p>
                         </div>
-                          <div class="col-xs-1 led-box">
-                          <div onclick="connectTCP();" id="tcp" class="icon led-red"></div>
-                          <p>TCP Verbindung</p>
+                        <div class="col-xs-1 led-box">
+                            <div onclick="connectTCP();" id="tcp" class="icon led-red"></div>
+                            <p>TCP Verbindung</p>
                         </div>
-                        
+
                         <div class="col-xs-1">
-                          
+
                         </div>
                         <div class="col-xs-3">
                             <div class="col-xs-6 led-box">
@@ -187,54 +316,60 @@
                             </div>
                         </div>
                         <div class="col-xs-1">
-                          
+
                         </div>
                         <div class="col-xs-1 led-box">
-                                <div onclick="toggleMeasurement();" id="start" class="icon led-blue"></div>
-                                <p>Starte Messung</p>
-                              </div>
-                        
+                            <div onclick="toggleMeasurement();" id="start" class="icon led-blue"></div>
+                            <p>Starte Messung</p>
+                        </div>
+
                         <div class="col-xs-1 led-box">
-                          <div onclick="savelog('save');" id="savelog" class="icon led-blue"></div>
-                          <p>Speichern</p>
+                            <div onclick="savelog('save');" id="savelog" class="icon led-blue"></div>
+                            <p>Speichern</p>
                         </div>
                         <div class="col-xs-1 ">
                             <div class="led-box">
                                 <div onclick="loadlog();" id="loadlog" class="icon led-blue"></div>
                                 <p>Log Laden</p>
-                              </div>
+                            </div>
                         </div>
                         <div class="col-xs-1 ">
-                          <div class="led-box">
-                              <div onclick="clearchart();" id="clear" class="icon led-blue"></div>
-                              <p>Chart Löschen</p>
-                          </div>
+                            <div class="led-box">
+                                <div onclick="clearchart();" id="clear" class="icon led-blue"></div>
+                                <p>Chart Löschen</p>
+                            </div>
                         </div>
                         <div class="col-xs-1 led-box">
-                            <div class="icon led-blue btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"></div>
+                            <div class="icon led-blue btn btn-primary" type="button" data-toggle="collapse"
+                                data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            </div>
                             <p>mehr</p>
                         </div>
                     </div>
                 </div>
-               
+
             </div>
             <div class="row" style="margin-top: 16px;">
-                <div class="col-xs-11">  
-                    <div  class="form-group pmd-textfield">          
-                        <input type="text" id="CMDLine" autocomplete="off"  placeholder="Nachricht Schreiben" class="form-control mit">
+                <div class="col-xs-11">
+                    <div class="form-group pmd-textfield">
+                        <input type="text" id="CMDLine" autocomplete="off" placeholder="Nachricht Schreiben"
+                            class="form-control mit">
                     </div>
                 </div>
                 <div class="col-xs-1 led-box">
-                        <i type="button" onclick="toggleFullscreen();" class="icon material-icons md-dark pmd-md">fullscreen</i>  
+                    <i type="button" onclick="toggleFullscreen();"
+                        class="icon material-icons md-dark pmd-md">fullscreen</i>
                 </div>
             </div>
         </div>
+
+
         <!-- Copyright -->
-      </footer>
-      <!-- Footer -->
+    </footer>
+    <!-- Footer -->
 </body>
 <script src="js/jquery-2.2.4.min.js"></script>
-<script src="js/jquery-ui.js"></script>   
+<script src="js/jquery-ui.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script src="js/socket.io/dist/socket.io.js"></script>

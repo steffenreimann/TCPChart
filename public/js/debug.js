@@ -200,6 +200,73 @@ function set_fps() {
     chart.update({duration: 0});
 }
 
+function setVis(id, iconID) {
+    var a = document.getElementById(id).style.visibility
+    console.log(a)
+    if(a == 'hidden'){
+        document.getElementById(id).style.visibility = 'visible'
+        document.getElementById(id).style.display = 'block'
+        $('#' + iconID).html("visibility");
+    }else{
+        document.getElementById(id).style.visibility = 'hidden'
+        document.getElementById(id).style.display = 'none'
+        $('#' + iconID).html("visibility_off");
+    }
+}
+
+function loadGlobalSettings(params) {
+    var realtime = cfg.options.scales.xAxes[0].realtime
+    $('#Duration').val(realtime.duration);
+    $('#ttl').val(realtime.ttl);
+    $('#Refresh').val(realtime.refresh);
+    $('#Delay').val(realtime.delay);
+}
+
+function loadDataSettings(index) {
+    var dataset = cfg.data.datasets[index]
+    var scale = cfg.options.scales.yAxes[index]
+
+    //{label: label, yAxisID: '', borderColor: '#32a852', fill: true, hidden: false, data: []}
+    $('#label').val(dataset.label);
+    $('#borderColor').val(dataset.borderColor);
+    $('#fill').val(dataset.fill);
+    $('#hidden').val(dataset.hidden);
+    $('#scalehidden').val(scale.display);
+}
+
+function SaveSettings(index) {
+    var dataset = cfg.data.datasets[index]
+    var realtime = cfg.options.scales.xAxes[0].realtime
+    console.log('dataset');
+    console.log(dataset);
+    console.log('realtime');
+    console.log(realtime);
+    
+    var fill = ($('#fill').val() == 'true');
+    var hidden = ($('#hidden').val() == 'true');
+    var scalehidden = ($('#scalehidden').val() == 'true');
+    console.log('scalehidden');
+    console.log(scalehidden);
+    //DataSettings
+    chart.data.datasets[index].label = $('#label').val();
+    chart.data.datasets[index].borderColor = $('#borderColor').val();
+    chart.data.datasets[index].fill = fill;
+    chart.data.datasets[index].hidden = hidden;
+    chart.options.scales.yAxes[index].display = scalehidden;
+
+    //Global Settings
+    Duration = new Number($('#Duration').val())
+    ttl = new Number($('#ttl').val())
+    Refresh = new Number($('#Refresh').val())
+    Delay = new Number($('#Delay').val())
+    chart.options.scales.xAxes[0].realtime.duration = Duration;
+    chart.options.scales.xAxes[0].realtime.ttl = ttl;
+    chart.options.scales.xAxes[0].realtime.refresh = Refresh;
+    chart.options.scales.xAxes[0].realtime.delay = Delay;
+    chart.update();
+}
+
+
 var runningSave = false;
 function savelog(save) {
     if (save) {
@@ -249,13 +316,13 @@ function toggleFullscreen() {
 }
 
 
-function toggle_chart_line(id){
+function toggle_chart_line(id, iconID){
     if(cfg.data.datasets[id].hidden){
         cfg.data.datasets[id].hidden = false;
-        $("#chart_line" + id).html("visibility");
+        $(iconID).html("visibility");
     }else{
         cfg.data.datasets[id].hidden = true;
-        $("#chart_line" + id).html("visibility_off");
+        $(iconID).html("visibility_off");
     }
     chart.update({duration: 0});
 } 
@@ -482,7 +549,7 @@ function PushData(data) {
         //console.log('index');
         //console.log(index);
         if (dataset.yAxisID == index) {
-           console.log(x);
+         //  console.log(x);
            if (x != undefined) {
                 dataset.data.push(x);
            }
@@ -651,3 +718,4 @@ var cfg = {
 
 
 var chart = new Chart(ctx, cfg);
+loadGlobalSettings() 
